@@ -1,0 +1,30 @@
+[[Wikitweak 0.1]]
+
+Contents:
+* Disclaimer
+* Requirements
+* Installation
+* Contact
+
+== Disclaimer ==
+
+There is no guarantee that any of the Wikitweak functionality will
+work on your system. 
+
+== Requirements ==
+
+The extension requires MediaWiki 1.41 or greater.
+
+== Installation ==
+
+(1) Extract the archive to obtain the directory "Wikitweak" that contains
+    all relevant files. Copy this directory (or extract/download it) to
+    "[wikipath]/extensions/".
+(2) Insert the following line into the file
+    "[wikipath]/LocalSettings.php":
+        wfLoadExtension( 'Wikitweak' );
+
+== Contact ==
+
+Comments, questions, suggestions and bug reports are welcome, and can be
+send to yaron57@gmail.com or sanjayipscoc@gmail.com or nk2indian@gmail.com
