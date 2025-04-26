@@ -1,0 +1,58 @@
+{
+	"name": "Wikitweak",
+	"version": "0.1",
+	"author": [
+		"Naresh Kumar B",
+		"Sanjay Thiyagarajan",
+        "Yaron Koren"
+	],
+	"url": "https://www.mediawiki.org/wiki/Extension:Wikitweak",
+	"descriptionmsg": "wikitweak-desc",
+	"license-name": "GPL-2.0-or-later",
+	"requires": {
+		"MediaWiki": ">= 1.41"
+	},
+	"type": "specialpage",
+	"GroupPermissions": {
+		"sysop": {
+			"wikitweak": true
+		}
+	},
+	"AvailableRights": [
+		"wikitweak"
+	],
+	"SpecialPages": {
+		"Wikitweak": {
+			"class": "MediaWiki\\Extension\\Wikitweak\\SpecialWikitweak",
+			"services": []
+		}
+	},
+	"MessagesDirs": {
+		"Wikitweak": [
+			"i18n"
+		]
+	},
+	"ResourceModules": {
+		"ext.Wikitweak": {
+			"scripts": [
+				"ext.Wikitweak.js"
+			]
+		},
+		"ext.WikitweakStyles": {
+			"styles": [
+				"ext.WikitweakStyles.less"
+			]
+		}
+	},
+	"ResourceFileModulePaths": {
+		"localBasePath": "resources",
+		"remoteExtPath": "Wikitweak/resources"
+	},
+	"ExtensionMessagesFiles": {
+		"WikitweakAlias": "Wikitweak.i18n.alias.php"
+	},
+	"AutoloadNamespaces": {
+		"MediaWiki\\Extension\\Wikitweak\\": "includes/specials"
+	},
+	"manifest_version": 1
+}

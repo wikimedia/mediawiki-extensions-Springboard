@@ -1,0 +1,12 @@
+{
+    "@metadata": {
+		"authors": [
+			"Jayanth Vikash Saminathan",
+            "Naresh Kumar Babu",
+            "Sanjay Thiyagarajan",
+            "Yaron Koren"
+		]
+	},
+    "wikitweak": "{{doc-special|Wikitweak}}",
+	"wikitweak-desc": "{{desc|name=Wikitweak|url=https://www.mediawiki.org/wiki/Extension:Wikitweak}}\n{{Identical|Content page}}"
+}
