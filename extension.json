@@ -22,10 +22,12 @@
 	"AvailableRights": [
 		"wikitweak"
 	],
+	"config": {
+		"WTDistributionListURL": "https://www.mediawiki.org/wiki/Recommended_revisions/1.43"
+	},
 	"SpecialPages": {
 		"Wikitweak": {
-			"class": "MediaWiki\\Extension\\Wikitweak\\SpecialWikitweak",
-			"services": []
+			"class": "MediaWiki\\Extension\\Wikitweak\\SpecialWikitweak"
 		}
 	},
 	"MessagesDirs": {
@@ -53,7 +55,7 @@
 		"WikitweakAlias": "Wikitweak.i18n.alias.php"
 	},
 	"AutoloadNamespaces": {
-		"MediaWiki\\Extension\\Wikitweak\\": "includes/specials"
+		"MediaWiki\\Extension\\Wikitweak\\": "includes"
 	},
 	"manifest_version": 1
 }

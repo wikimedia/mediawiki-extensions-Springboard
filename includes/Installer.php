@@ -2,7 +2,7 @@
 /**
  * Installer class for the Wikitweak extension.
  *
- * Provides functionality to clone, enable, and update MediaWiki 
+ * Provides functionality to clone, enable, and update MediaWiki
  * extensions and skins.
  *
  * @author  Jayanth Vikash Saminathan <jayanthvikashs@gmail.com>
@@ -15,141 +15,216 @@
 
 namespace MediaWiki\Extension\Wikitweak;
 
-use MediaWiki\MediaWikiServices;
+class Installer {
 
-/**
- * Class Installer
- * 
- * Handles installing and enabling MediaWiki extensions and skins.
- * 
- * @author Jayanth Vikash Saminathan <jayanthvikashs@gmail.com>
- * @author Naresh Kumar Babu <nk2indian@gmail.com>
- * @author Sanjay Thiyagarajan <sanjayipscoc@gmail.com>
- * @author Yaron Koren <yaron57@gmail.com>
- */
-class Installer
-{
+	/**
+	 * Install an extension from a Git repository.
+	 *
+	 * @param string $name Extension name.
+	 * @param string $repository Git repository URL.
+	 * @param string $branch Git branch name. Defaults to 'master'.
+	 * @param string $commit Specific commit hash to checkout. Defaults to '' (HEAD).
+	 *
+	 * @return array [bool success, string message]
+	 */
+	public static function installExtension( $name, $repository, $branch = 'master', $commit = '' ) {
+		return self::install( 'extensions', $name, $repository, $branch, $commit );
+	}
 
-    /**
-     * Install an extension from a Git repository.
-     *
-     * @param string $name       Extension name.
-     * @param string $repository Git repository URL.
-     * @param string $branch     Git branch name. Defaults to 'master'.
-     * @param string $commit     Specific commit hash to checkout. Defaults to '' (HEAD).
-     *
-     * @return array [bool success, string message]
-     */
-    public static function installExtension( 
-        $name, $repository, $branch = 'master', $commit = '' 
-    ) {
-        return self::install('extensions', $name, $repository, $branch, $commit);
-    }
+	/**
+	 * Install a skin from a Git repository.
+	 *
+	 * @param string $name Skin name.
+	 * @param string $repository Git repository URL.
+	 * @param string $branch Git branch name. Defaults to 'master'.
+	 * @param string $commit Specific commit hash to checkout. Defaults to '' (HEAD).
+	 *
+	 * @return array [bool success, string message]
+	 */
+	public static function installSkin( $name, $repository, $branch = 'master', $commit = '' ) {
+		return self::install( 'skins', $name, $repository, $branch, $commit );
+	}
 
-    /**
-     * Install a skin from a Git repository.
-     *
-     * @param string $name       Skin name.
-     * @param string $repository Git repository URL.
-     * @param string $branch     Git branch name. Defaults to 'master'.
-     * @param string $commit     Specific commit hash to checkout. Defaults to '' (HEAD).
-     *
-     * @return array [bool success, string message]
-     */
-    public static function installSkin( 
-        $name, $repository, $branch = 'master', $commit = '' 
-    ) {
-        return self::install('skins', $name, $repository, $branch, $commit);
-    }
+	/**
+	 * Shared install logic for extensions and skins.
+	 *
+	 * @param string $type 'extensions' or 'skins'.
+	 * @param string $name Name of extension/skin.
+	 * @param string $repository Git repository URL.
+	 * @param string $branch Git branch name.
+	 * @param string $commit Specific commit hash to checkout.
+	 *
+	 * @return array [bool success, string message]
+	 */
+	protected static function install( $type, $name, $repository, $branch, $commit ) {
+		$basePath = dirname( __DIR__, 3 ) . '/' . $type . '/' . $name;
 
-    /**
-     * Shared install logic for extensions and skins.
-     *
-     * @param string $type       'extensions' or 'skins'.
-     * @param string $name       Name of extension/skin.
-     * @param string $repository Git repository URL.
-     * @param string $branch     Git branch name.
-     * @param string $commit     Specific commit hash to checkout.
-     *
-     * @return array [bool success, string message]
-     */
-    protected static function install( $type, $name, $repository, $branch, $commit )
-    {
-        $basePath = dirname(__DIR__, 2) . '/' . $type . '/' . $name;
+		if ( is_dir( $basePath ) ) {
+			return [ false, ucfirst( rtrim( $type, 's' ) ) . " '$name' already installed." ];
+		}
 
-        if (is_dir($basePath) ) {
-            return [
-                false,
-                ucfirst(rtrim($type, 's')) . " '$name' already installed."
-            ];
-        }
+		$gitCmd = "git clone --branch " . $branch . ' '
+			. $repository . ' '
+			. $basePath;
 
-        $gitCmd = "git clone --branch " . escapeshellarg($branch) . ' '
-            . escapeshellarg($repository) . ' '
-            . escapeshellarg($basePath);
+		exec( $gitCmd, $output, $status );
 
-        exec($gitCmd, $output, $status);
+		if ( $status !== 0 ) {
+			return [ false, implode( "\n", $output ) ];
+		}
 
-        if ($status !== 0 ) {
-            return [ false, implode("\n", $output) ];
-        }
+		if ( $commit && $commit !== 'HEAD' ) {
+			exec(
+				'cd ' . $basePath . ' && git checkout ' . $commit
+			);
+		}
 
-        if ($commit && $commit !== 'HEAD' ) {
-            exec(
-                'cd ' . escapeshellarg($basePath) . ' && git checkout ' . escapeshellarg($commit)
-            );
-        }
+		return [ true, ucfirst( rtrim( $type, 's' ) ) . " '$name' installed successfully." ];
+	}
 
-        return [
-            true,
-            ucfirst(rtrim($type, 's')) . " '$name' installed successfully."
-        ];
-    }
+	/**
+	 * Enable an extension in LocalSettings.php.
+	 *
+	 * If the line is commented (with // or #), it will be uncommented.
+	 * If missing, it will be appended.
+	 *
+	 * @param string $name Extension name.
+	 *
+	 * @return string Status message.
+	 */
+	public static function smartEnableExtension( $name ) {
+		$localSettingsPath = dirname( __DIR__, 2 ) . '/LocalSettings.php';
+		if ( !file_exists( $localSettingsPath ) ) {
+			return "LocalSettings.php not found.";
+		}
 
-    /**
-     * Enable an extension by adding it to LocalSettings.php.
-     *
-     * @param string $name Extension name.
-     *
-     * @return string Status message.
-     */
-    public static function enableExtension( $name )
-    {
-        $localSettingsPath = dirname(__DIR__, 2) . '/LocalSettings.php';
-        $loadString = "wfLoadExtension( '$name' );\n";
+		$contents = file_get_contents( $localSettingsPath );
+		$patternCommented = "/^( *)(\/\/|#)\s*wfLoadExtension\(\s*'" . preg_quote( $name, '/' ) . "'\s*\)\s*;/m";
 
-        file_put_contents($localSettingsPath, "\n" . $loadString, FILE_APPEND);
+		if ( preg_match( $patternCommented, $contents, $matches ) ) {
+			// Uncomment by removing comment marker
+			$replacement = $matches[1] . "wfLoadExtension( '$name' );";
+			$newContents = preg_replace( $patternCommented, $replacement, $contents, 1 );
+			file_put_contents( $localSettingsPath, $newContents );
+			return "Extension '$name' re-enabled (uncommented).";
+		}
 
-        return "Extension '$name' enabled in LocalSettings.php.";
-    }
+		// If not found, append
+		$loadString = "\nwfLoadExtension( '$name' );\n";
+		file_put_contents( $localSettingsPath, $loadString, FILE_APPEND );
 
-    /**
-     * Enable a skin by adding it to LocalSettings.php.
-     *
-     * @param string $name Skin name.
-     *
-     * @return string Status message.
-     */
-    public static function enableSkin( $name )
-    {
-        $localSettingsPath = dirname(__DIR__, 2) . '/LocalSettings.php';
-        $loadString = "\$wgValidSkinNames['" . $name . "'] = '$name';\n";
+		return "Extension '$name' added and enabled.";
+	}
 
-        file_put_contents($localSettingsPath, "\n" . $loadString, FILE_APPEND);
+	/**
+	 * Disable an extension by commenting out its load line in LocalSettings.php.
+	 *
+	 * @param string $name Extension name.
+	 *
+	 * @return string Status message.
+	 */
+	public static function disableExtension( $name ) {
+		$localSettingsPath = dirname( __DIR__, 2 ) . '/LocalSettings.php';
+		if ( !file_exists( $localSettingsPath ) ) {
+			return "LocalSettings.php not found.";
+		}
 
-        return "Skin '$name' enabled in LocalSettings.php.";
-    }
+		$contents = file_get_contents( $localSettingsPath );
+		$patternEnabled = "/^( *)(wfLoadExtension\(\s*'" . preg_quote( $name, '/' ) . "'\s*\)\s*;)/m";
 
-    /**
-     * Run MediaWiki's update.php maintenance script.
-     *
-     * @return string Status message.
-     */
-    public static function runUpdateScript()
-    {
-        $cmd = "php maintenance/update.php";
-        exec($cmd);
+		if ( preg_match( $patternEnabled, $contents, $matches ) ) {
+			$replacement = $matches[1] . '# ' . $matches[2];
+			$newContents = preg_replace( $patternEnabled, $replacement, $contents, 1 );
+			file_put_contents( $localSettingsPath, $newContents );
+			return "Extension '$name' disabled (commented).";
+		}
 
-        return "Database updated.";
-    }
+		return "Extension '$name' was not enabled.";
+	}
+
+	/**
+	 * Check if an extension is enabled or disabled in LocalSettings.php.
+	 *
+	 * @param string $name Extension name.
+	 *
+	 * @return string 'enabled', 'disabled', or 'notfound'
+	 */
+	public static function checkExtensionStatus( $name ) {
+		$localSettingsPath = dirname( __DIR__, 2 ) . '/LocalSettings.php';
+		if ( !file_exists( $localSettingsPath ) ) {
+			return 'notfound';
+		}
+
+		$contents = file_get_contents( $localSettingsPath );
+		$patternEnabled = "/^\s*wfLoadExtension\(\s*'" . preg_quote( $name, '/' ) . "'\s*\)\s*;/m";
+		$patternCommented = "/^\s*(\/\/|#)\s*wfLoadExtension\(\s*'" . preg_quote( $name, '/' ) . "'\s*\)\s*;/m";
+
+		if ( preg_match( $patternEnabled, $contents ) ) {
+			return 'enabled';
+		} elseif ( preg_match( $patternCommented, $contents ) ) {
+			return 'disabled';
+		} else {
+			return 'notfound';
+		}
+	}
+
+	/**
+	 * Check if a skin is enabled or disabled in LocalSettings.php.
+	 *
+	 * @param string $name Skin name.
+	 *
+	 * @return string 'enabled', 'disabled', or 'notfound'
+	 */
+	public static function checkSkinStatus( $name ) {
+		$localSettingsPath = dirname( __DIR__, 2 ) . '/LocalSettings.php';
+		if ( !file_exists( $localSettingsPath ) ) {
+			return 'notfound';
+		}
+
+		$contents = file_get_contents( $localSettingsPath );
+		$patternEnabled = "/^\s*wfLoadSkin\(\s*'" . preg_quote( $name, '/' ) . "'\s*\)\s*;/m";
+		$patternCommented = "/^\s*(\/\/|#)\s*wfLoadSkin\(\s*'" . preg_quote( $name, '/' ) . "'\s*\)\s*;/m";
+
+		if ( preg_match( $patternEnabled, $contents ) ) {
+			return 'enabled';
+		} elseif ( preg_match( $patternCommented, $contents ) ) {
+			return 'disabled';
+		} else {
+			return 'notfound';
+		}
+	}
+
+	/**
+	 * Install and enable a skin (smart logic).
+	 *
+	 * @param string $name Skin name.
+	 * @param string $repository Git repository URL.
+	 * @param string $branch Git branch name.
+	 * @param string $commit Specific commit hash.
+	 *
+	 * @return array [bool success, string message]
+	 */
+	public static function installAndEnableSkin( $name, $repository, $branch = 'master', $commit = '' ) {
+		$installResult = self::installSkin( $name, $repository, $branch, $commit );
+		if ( !$installResult[0] ) {
+			return $installResult;
+		}
+
+		$localSettingsPath = dirname( __DIR__, 2 ) . '/LocalSettings.php';
+		$skinString = "\n\$wgValidSkinNames['$name'] = '$name';\n";
+		file_put_contents( $localSettingsPath, $skinString, FILE_APPEND );
+
+		return [ true, "Skin '$name' installed and enabled." ];
+	}
+
+	/**
+	 * Run MediaWiki's update.php maintenance script.
+	 *
+	 * @return string Status message.
+	 */
+	public static function runUpdateScript() {
+		$cmd = "php maintenance/update.php";
+		exec( $cmd );
+		return "Database updated.";
+	}
 }
