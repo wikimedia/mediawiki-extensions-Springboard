@@ -93,7 +93,7 @@ class Installer {
 	 * @return string Status message.
 	 */
 	public static function smartEnableExtension( $name ) {
-		$localSettingsPath = dirname( __DIR__, 2 ) . '/LocalSettings.php';
+		$localSettingsPath = dirname( __DIR__, 3 ) . '/LocalSettings.php';
 		if ( !file_exists( $localSettingsPath ) ) {
 			return "LocalSettings.php not found.";
 		}
@@ -111,7 +111,9 @@ class Installer {
 
 		// If not found, append
 		$loadString = "\nwfLoadExtension( '$name' );\n";
-		file_put_contents( $localSettingsPath, $loadString, FILE_APPEND );
+		if ( strpos( file_get_contents( $localSettingsPath ), $loadString ) === false ) {
+			file_put_contents( $localSettingsPath, $loadString, FILE_APPEND );
+		}
 
 		return "Extension '$name' added and enabled.";
 	}

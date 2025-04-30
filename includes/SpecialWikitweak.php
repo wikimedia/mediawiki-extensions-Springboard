@@ -75,7 +75,8 @@ class SpecialWikitweak extends SpecialPage {
 		if ( $type === 'extensions' ) {
 			list( $ok, $msg ) = Installer::installExtension( $name, $repository, $branch, $commit );
 			if ( $ok ) {
-				Installer::smartEnableExtension( $name );
+				 $enableMsg = Installer::smartEnableExtension( $name );
+				 $msg .= "\n" . $enableMsg;
 			}
 		} else {
 			list( $ok, $msg ) = Installer::installAndEnableSkin( $name, $repository, $branch, $commit );
