@@ -65,6 +65,11 @@
 			]
 		}
 	},
+	"APIModules": {
+		"wikitweak": {
+			"class": "MediaWiki\\Extension\\Wikitweak\\WikitweakAPI"
+		}
+	},
 	"ResourceFileModulePaths": {
 		"localBasePath": "resources",
 		"remoteExtPath": "Wikitweak/resources"

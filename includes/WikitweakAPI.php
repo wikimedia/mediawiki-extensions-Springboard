@@ -10,20 +10,16 @@
  * @ingroup Extensions
  */
 
+ namespace MediaWiki\Extension\Wikitweak;
+
+ use ApiBase;
+ use Wikimedia\ParamValidator\ParamValidator;
+
  /**
  * @ingroup Wikitweak
  */
 class WikitweakAPI extends ApiBase {
 
-    /**
-	 * Evaluates the parameters, performs the requested API query, and sets up
-	 * the result.
-	 *
-	 * The execute() method will be invoked when an API call is processed.
-	 *
-	 * The result data is stored in the ApiResult object available through
-	 * getResult().
-	 */
 	function execute() {
 		$data = $this->extractRequestParams();
 
@@ -32,7 +28,14 @@ class WikitweakAPI extends ApiBase {
                 // Just enable and do not try to download
             } else {
                 // Clone first
+                $this->download( $data );
                 // Enable
+            }
+            if ( $data[ 'dbupdate' ] == true ) {
+                $this->dbUpdate();
+            }
+            if ( $data[ 'composer' ] == true ) {
+                $this->composerInstall();
             }
         } elseif ( $data[ 'action' ] == 'uninstall' ) {
             if ( $data[ 'bundled' ] == true ) {
@@ -40,6 +43,7 @@ class WikitweakAPI extends ApiBase {
             } else {
                 // Disable first
                 // Delete the directory
+                $this->delete( $data );
             }
         } else {
             // Throw an error in response here
@@ -83,6 +87,71 @@ class WikitweakAPI extends ApiBase {
                 break;
             case 'skin':
                 wfLoadSkin( $data[ 'name' ] );
+                break;
+            default:
+                break;
+        }
+    }
+
+    /**
+     * Download extension / skin using Git clone
+     * @param mixed $data
+     * @return void
+     */
+    function download( $data ) {
+        switch ( $data[ 'type' ] ) {
+            case 'extension':
+                exec( 'git clone --branch ' . $data[ 'branch' ]
+                    . 'https://github.com/wikimedia/mediawiki-extensions-'
+                    . $data[ 'name' ] . ' ../extensions/' . $data[ 'name' ] );
+                if ( $data[ 'commit' ] && $data[ 'commit' ] !== 'HEAD' ) {
+                    exec(
+                        'cd ' . ' ../extensions/' . ' && git checkout ' . $data[ 'commit' ]
+                    );
+                }
+                break;
+            case 'skin':
+                exec( 'git clone --branch ' . $data[ 'branch' ]
+                    . 'https://github.com/wikimedia/mediawiki-skins-'
+                    . $data[ 'name' ] . ' ../skins/' . $data[ 'name' ] );
+                if ( $data[ 'commit' ] && $data[ 'commit' ] !== 'HEAD' ) {
+                    exec(
+                        'cd ' . ' ../skins/' . ' && git checkout ' . $data[ 'commit' ]
+                    );
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    /**
+     * Run MW maintenance update script to create / modify necessary tables for the extension / skin
+     * @return void
+     */
+    function dbUpdate() {
+    }
+
+    /**
+     * Run Composer install command to fetch the composer-based dependencies for the extension / skin
+     * @return void
+     */
+    function composerInstall() {
+
+    }
+
+    /**
+     * Delete extension / skin directory
+     * @param mixed $data
+     * @return void
+     */
+    function delete( $data ) {
+        switch ( $data[ 'type' ] ) {
+            case 'extension':
+                exec( 'rm -rf ' . '../extensions/' . $data[ 'name' ] );
+                break;
+            case 'skin':
+                exec( 'rm -rf ' . '../skins/' . $data[ 'name' ] );
                 break;
             default:
                 break;
