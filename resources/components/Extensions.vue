@@ -9,8 +9,8 @@
 			<a :href="`https://www.mediawiki.org/wiki/Extension:${ item }`">{{ item }}</a>
 		</template>
         <template #item-action="{ item }">
-			<cdx-button action="progressive" weight="primary">{{ item['install']['action'] }}</cdx-button>
-            <cdx-button action="destructive" weight="primary">{{ item['uninstall']['action'] }}</cdx-button>
+			<cdx-button v-if="item.exists" action="destructive" weight="primary">{{ item.action }}</cdx-button>
+			<cdx-button v-else action="progressive" weight="primary">{{ item.action }}</cdx-button>
 		</template>
 	</cdx-table>
 </template>
@@ -46,10 +46,10 @@ module.exports = {
                 installActionName = 'Enable';
                 uninstallActionName = 'Disable';
             }
-            updatedMap['action'] = {
-                'install': {...mapCopy, 'action': installActionName},
-                'uninstall': {...mapCopy, 'action': uninstallActionName}
-            }
+            console.log(updatedMap);
+            updatedMap['action'] = updatedMap['exists']
+                ? { ...mapCopy, action: uninstallActionName }
+                : { ...mapCopy, action: installActionName }
             return updatedMap;
         } );
 		return {

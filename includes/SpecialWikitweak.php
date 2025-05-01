@@ -12,6 +12,7 @@
 
 namespace MediaWiki\Extension\Wikitweak;
 
+use ExtensionRegistry;
 use Html;
 use PermissionsError;
 use SpecialPage;
@@ -36,19 +37,36 @@ class SpecialWikitweak extends SpecialPage {
 		}
 
 		$out = $this->getOutput();
-		
+
 		$recs = $this->fetchRecommendedPage();
 
+		if ( isset( $recs['extensions'] ) ) {
+			$recs['extensions'] = $this->addExistsFlagToItems( $recs['extensions'] );
+		}
+
+		if ( isset( $recs['skins'] ) ) {
+			$recs['skins'] = $this->addExistsFlagToItems( $recs['skins'] );
+		}
 
 		$out->addJsConfigVars( 'WTExtensions', $recs[ 'extensions' ] );
 		$out->addJsConfigVars( 'WTSkins', $recs[ 'skins' ] );
 		$out->addModules( [ 'ext.Wikitweak' ] );
 
-		$out->addHTML( 
+		$out->addHTML(
 			Html::rawElement( 'div', [
 				'id' => 'wikitweak-vue-root'
 			] )
 		);
+	}
+
+	private function addExistsFlagToItems( $items ) {
+		foreach ( $items as $i => $entry ) {
+			foreach ( $entry as $name => $metadata ) {
+				$metadata['exists'] = ExtensionRegistry::getInstance()->isLoaded( $name ) ? true : false;
+				$items[$i] = [ $name => $metadata ];
+			}
+		}
+		return $items;
 	}
 
 	/**
