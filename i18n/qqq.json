@@ -8,5 +8,7 @@
 		]
 	},
     "wikitweak": "{{doc-special|Wikitweak}}",
-	"wikitweak-desc": "{{desc|name=Wikitweak|url=https://www.mediawiki.org/wiki/Extension:Wikitweak}}\n{{Identical|Content page}}"
+	"wikitweak-desc": "{{desc|name=Wikitweak|url=https://www.mediawiki.org/wiki/Extension:Wikitweak}}\n{{Identical|Content page}}",
+    "wikitweak-extensions-tab-name": "Tab label for extensions",
+	"wikitweak-skins-tab-name": "Tab label for skins"
 }

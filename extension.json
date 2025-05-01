@@ -37,8 +37,26 @@
 	},
 	"ResourceModules": {
 		"ext.Wikitweak": {
-			"scripts": [
-				"ext.Wikitweak.js"
+			"class": "MediaWiki\\ResourceLoader\\CodexModule",
+			"dependencies": [
+				"vue"
+			],
+			"packageFiles": [
+				"init.js",
+				"components/App.vue",
+				"components/Extensions.vue",
+				"components/Skins.vue"
+			],
+			"codexComponents": [
+				"CdxButton",
+				"CdxTextInput",
+				"CdxTab",
+				"CdxTabs",
+				"CdxTable"
+			],
+			"messages": [
+				"wikitweak-extensions-tab-name",
+				"wikitweak-skins-tab-name"
 			]
 		},
 		"ext.WikitweakStyles": {

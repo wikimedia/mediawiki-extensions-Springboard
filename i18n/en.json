@@ -8,5 +8,7 @@
 		]
 	},
 	"wikitweak": "Wikitweak",
-	"wikitweak-desc": "Allows users to install extensions and skins in their wiki"
+	"wikitweak-desc": "Allows users to install extensions and skins in their wiki",
+	"wikitweak-extensions-tab-name": "Extensions",
+	"wikitweak-skins-tab-name": "Skins"
 }

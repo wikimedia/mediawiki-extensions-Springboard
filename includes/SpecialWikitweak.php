@@ -16,6 +16,7 @@ use OOUI\ButtonInputWidget;
 use OOUI\DropdownInputWidget;
 use OOUI\FieldLayout;
 use OOUI\FieldsetLayout;
+use Html;
 use PermissionsError;
 use SpecialPage;
 use Symfony\Component\Yaml\Yaml;
@@ -101,163 +102,174 @@ class SpecialWikitweak extends SpecialPage {
 		$out = $this->getOutput();
 		$recs = $this->fetchRecommendedPage();
 
-		$extensionsToInstall = [];
-		$skinsToInstall = [];
 
-		foreach ( $recs['extensions'] as $extInfo ) {
-			foreach ( $extInfo as $name => $details ) {
-				if ( Installer::checkExtensionStatus( $name ) === 'notfound' ) {
-					$extensionsToInstall[] = [ "data" => "extensions:$name|" . json_encode( $details ), "label" => "$name" ];
-				}
-			}
-		}
+		$out->addJsConfigVars( 'WTExtensions', $recs[ 'extensions' ] );
+		$out->addJsConfigVars( 'WTSkins', $recs[ 'skins' ] );
+		$out->addModules( [ 'ext.Wikitweak' ] );
 
-		foreach ( $recs['skins'] as $skinInfo ) {
-			foreach ( $skinInfo as $name => $details ) {
-				if ( Installer::checkSkinStatus( $name ) === 'notfound' ) {
-					$skinsToInstall[] = [ "data" => "skins:$name", "label" => "$name" ];
-				}
-			}
-		}
+		$out->addHTML( 
+			Html::rawElement( 'div', [
+				'id' => 'wikitweak-vue-root'
+			] )
+		);
 
-		$extensionsInstalled = [];
-		$skinsInstalled = [];
+		// $extensionsToInstall = [];
+		// $skinsToInstall = [];
 
-		foreach ( $recs['extensions'] as $extInfo ) {
-			foreach ( $extInfo as $name => $details ) {
-				if ( Installer::checkExtensionStatus( $name ) === 'enabled' ) {
-					$extensionsInstalled[] = [ "data" => "extensions:$name|" . json_encode( $details ), "label" => $name ];
-				}
-			}
-		}
+		// foreach ( $recs['extensions'] as $extInfo ) {
+		// 	foreach ( $extInfo as $name => $details ) {
+		// 		if ( Installer::checkExtensionStatus( $name ) === 'notfound' ) {
+		// 			$extensionsToInstall[] = [ "data" => "extensions:$name|" . json_encode( $details ), "label" => "$name" ];
+		// 		}
+		// 	}
+		// }
 
-		foreach ( $recs['skins'] as $skinInfo ) {
-			foreach ( $skinInfo as $name => $details ) {
-				if ( Installer::checkSkinStatus( $name ) === 'enabled' ) {
-					$skinsInstalled[] = [ "data" => "skins:$name", "label" => $name ];
-				}
-			}
-		}
+		// foreach ( $recs['skins'] as $skinInfo ) {
+		// 	foreach ( $skinInfo as $name => $details ) {
+		// 		if ( Installer::checkSkinStatus( $name ) === 'notfound' ) {
+		// 			$skinsToInstall[] = [ "data" => "skins:$name", "label" => "$name" ];
+		// 		}
+		// 	}
+		// }
 
-		// --- Extension Install Form ---
-		if ( !empty( $extensionsToInstall ) ) {
-			$extInstallForm = new FieldsetLayout(
-				[
-				'label' => 'Install Recommended Extensions',
-				'items' => [
-					new FieldLayout(
-						new DropdownInputWidget(
-							[
-							'name' => 'item',
-							'options' => $extensionsToInstall
-							 ]
-						),
-						[ 'label' => 'Choose Extension to Install' ]
-					),
-					new ButtonInputWidget(
-						[
-						'name' => 'action',
-						'value' => 'install',
-						'type' => 'submit',
-						'flags' => [ 'primary', 'progressive' ],
-						'label' => 'Install Extension'
-						 ]
-					)
-				]
-				 ]
-			);
-			$out->addHTML( '<form method="post">' . $extInstallForm . '</form>' );
-		}
+		// $extensionsInstalled = [];
+		// $skinsInstalled = [];
 
-		// --- Skin Install Form ---
-		if ( !empty( $skinsToInstall ) ) {
-			$skinInstallForm = new FieldsetLayout(
-				[
-				'label' => 'Install Recommended Skins',
-				'items' => [
-					new FieldLayout(
-						new DropdownInputWidget(
-							[
-							'name' => 'item',
-							'options' => $skinsToInstall
-							 ]
-						),
-						[ 'label' => 'Choose Skin to Install' ]
-					),
-					new ButtonInputWidget(
-						[
-						'name' => 'action',
-						'value' => 'install',
-						'type' => 'submit',
-						'flags' => [ 'primary', 'progressive' ],
-						'label' => 'Install Skin'
-						 ]
-					)
-				]
-				 ]
-			);
-			$out->addHTML( '<form method="post">' . $skinInstallForm . '</form>' );
-		}
+		// foreach ( $recs['extensions'] as $extInfo ) {
+		// 	foreach ( $extInfo as $name => $details ) {
+		// 		if ( Installer::checkExtensionStatus( $name ) === 'enabled' ) {
+		// 			$extensionsInstalled[] = [ "data" => "extensions:$name|" . json_encode( $details ), "label" => $name ];
+		// 		}
+		// 	}
+		// }
 
-		// --- Extension Uninstall Form ---
-		if ( !empty( $extensionsInstalled ) ) {
-			$extUninstallForm = new FieldsetLayout(
-				[
-				'label' => 'Uninstall Installed Extensions',
-				'items' => [
-					new FieldLayout(
-						new DropdownInputWidget(
-							[
-							'name' => 'item',
-							'options' => $extensionsInstalled
-							 ]
-						),
-						[ 'label' => 'Choose Extension to Uninstall' ]
-					),
-					new ButtonInputWidget(
-						[
-						'name' => 'action',
-						'value' => 'uninstall',
-						'type' => 'submit',
-						'flags' => [ 'destructive' ],
-						'label' => 'Uninstall Extension'
-						 ]
-					)
-				]
-				 ]
-			);
-			$out->addHTML( '<form method="post">' . $extUninstallForm . '</form>' );
-		}
+		// foreach ( $recs['skins'] as $skinInfo ) {
+		// 	foreach ( $skinInfo as $name => $details ) {
+		// 		if ( Installer::checkSkinStatus( $name ) === 'enabled' ) {
+		// 			$skinsInstalled[] = [ "data" => "skins:$name", "label" => $name ];
+		// 		}
+		// 	}
+		// }
 
-		// --- Skin Uninstall Form ---
-		if ( !empty( $skinsInstalled ) ) {
-			$skinUninstallForm = new FieldsetLayout(
-				[
-				'label' => 'Uninstall Installed Skins',
-				'items' => [
-					new FieldLayout(
-						new DropdownInputWidget(
-							[
-							'name' => 'item',
-							'options' => $skinsInstalled
-							 ]
-						),
-						[ 'label' => 'Choose Skin to Uninstall' ]
-					),
-					new ButtonInputWidget(
-						[
-						'name' => 'action',
-						'value' => 'uninstall',
-						'type' => 'submit',
-						'flags' => [ 'destructive' ],
-						'label' => 'Uninstall Skin'
-						 ]
-					)
-				]
-				 ]
-			);
-			$out->addHTML( '<form method="post">' . $skinUninstallForm . '</form>' );
-		}
+		// // --- Extension Install Form ---
+		// if ( !empty( $extensionsToInstall ) ) {
+		// 	$extInstallForm = new FieldsetLayout(
+		// 		[
+		// 		'label' => 'Install Recommended Extensions',
+		// 		'items' => [
+		// 			new FieldLayout(
+		// 				new DropdownInputWidget(
+		// 					[
+		// 					'name' => 'item',
+		// 					'options' => $extensionsToInstall
+		// 					 ]
+		// 				),
+		// 				[ 'label' => 'Choose Extension to Install' ]
+		// 			),
+		// 			new ButtonInputWidget(
+		// 				[
+		// 				'name' => 'action',
+		// 				'value' => 'install',
+		// 				'type' => 'submit',
+		// 				'flags' => [ 'primary', 'progressive' ],
+		// 				'label' => 'Install Extension'
+		// 				 ]
+		// 			)
+		// 		]
+		// 		 ]
+		// 	);
+		// 	$out->addHTML( '<form method="post">' . $extInstallForm . '</form>' );
+		// }
+
+		// // --- Skin Install Form ---
+		// if ( !empty( $skinsToInstall ) ) {
+		// 	$skinInstallForm = new FieldsetLayout(
+		// 		[
+		// 		'label' => 'Install Recommended Skins',
+		// 		'items' => [
+		// 			new FieldLayout(
+		// 				new DropdownInputWidget(
+		// 					[
+		// 					'name' => 'item',
+		// 					'options' => $skinsToInstall
+		// 					 ]
+		// 				),
+		// 				[ 'label' => 'Choose Skin to Install' ]
+		// 			),
+		// 			new ButtonInputWidget(
+		// 				[
+		// 				'name' => 'action',
+		// 				'value' => 'install',
+		// 				'type' => 'submit',
+		// 				'flags' => [ 'primary', 'progressive' ],
+		// 				'label' => 'Install Skin'
+		// 				 ]
+		// 			)
+		// 		]
+		// 		 ]
+		// 	);
+		// 	$out->addHTML( '<form method="post">' . $skinInstallForm . '</form>' );
+		// }
+
+		// // --- Extension Uninstall Form ---
+		// if ( !empty( $extensionsInstalled ) ) {
+		// 	$extUninstallForm = new FieldsetLayout(
+		// 		[
+		// 		'label' => 'Uninstall Installed Extensions',
+		// 		'items' => [
+		// 			new FieldLayout(
+		// 				new DropdownInputWidget(
+		// 					[
+		// 					'name' => 'item',
+		// 					'options' => $extensionsInstalled
+		// 					 ]
+		// 				),
+		// 				[ 'label' => 'Choose Extension to Uninstall' ]
+		// 			),
+		// 			new ButtonInputWidget(
+		// 				[
+		// 				'name' => 'action',
+		// 				'value' => 'uninstall',
+		// 				'type' => 'submit',
+		// 				'flags' => [ 'destructive' ],
+		// 				'label' => 'Uninstall Extension'
+		// 				 ]
+		// 			)
+		// 		]
+		// 		 ]
+		// 	);
+		// 	$out->addHTML( '<form method="post">' . $extUninstallForm . '</form>' );
+		// }
+
+		// // --- Skin Uninstall Form ---
+		// if ( !empty( $skinsInstalled ) ) {
+		// 	$skinUninstallForm = new FieldsetLayout(
+		// 		[
+		// 		'label' => 'Uninstall Installed Skins',
+		// 		'items' => [
+		// 			new FieldLayout(
+		// 				new DropdownInputWidget(
+		// 					[
+		// 					'name' => 'item',
+		// 					'options' => $skinsInstalled
+		// 					 ]
+		// 				),
+		// 				[ 'label' => 'Choose Skin to Uninstall' ]
+		// 			),
+		// 			new ButtonInputWidget(
+		// 				[
+		// 				'name' => 'action',
+		// 				'value' => 'uninstall',
+		// 				'type' => 'submit',
+		// 				'flags' => [ 'destructive' ],
+		// 				'label' => 'Uninstall Skin'
+		// 				 ]
+		// 			)
+		// 		]
+		// 		 ]
+		// 	);
+		// 	$out->addHTML( '<form method="post">' . $skinUninstallForm . '</form>' );
+		// }
 	}
 
 	/**
