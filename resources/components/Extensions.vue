@@ -27,7 +27,6 @@ module.exports = {
         CdxButton
     },
 	setup() {
-        console.log(mw.config);
         let data = mw.config.get( 'WTExtensions' );
         let version = mw.config.get( 'wgVersion' ).split( '.' );
 		const mwVersion = `REL${version[0]}_${version[1]}`;

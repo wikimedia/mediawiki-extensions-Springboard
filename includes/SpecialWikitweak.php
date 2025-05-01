@@ -12,10 +12,6 @@
 
 namespace MediaWiki\Extension\Wikitweak;
 
-use OOUI\ButtonInputWidget;
-use OOUI\DropdownInputWidget;
-use OOUI\FieldLayout;
-use OOUI\FieldsetLayout;
 use Html;
 use PermissionsError;
 use SpecialPage;
