@@ -25,9 +25,9 @@ class WikitweakAPI extends ApiBase {
 
 	function execute() {
 		$data = $this->extractRequestParams();
-		$type = $data[ 'type' ];
-		$name = $data[ 'name' ];
-		$action = $data[ 'action' ];
+		$type = $data[ 'wttype' ];
+		$name = $data[ 'wtname' ];
+		$action = $data[ 'wtaction' ];
 
 		$registry = ExtensionRegistry::getInstance();
 		$func = $type === 'extension' ? 'wfLoadExtension' : 'wfLoadSkin';
@@ -67,10 +67,10 @@ class WikitweakAPI extends ApiBase {
 		file_put_contents( $this->loaderFile, "<?php\n" . implode( "\n", $lines ) . "\n" );
 
 		if ( $action == 'install' ) {
-			if ( $data[ 'dbupdate' ] == true ) {
+			if ( $data[ 'wtdbupdate' ] == true ) {
 				$this->dbUpdate();
 			}
-			if ( $data[ 'composer' ] == true ) {
+			if ( $data[ 'wtcomposer' ] == true ) {
 				$this->composerInstall();
 			}
 		}
@@ -92,24 +92,24 @@ class WikitweakAPI extends ApiBase {
 	 * @return void
 	 */
 	function download( $data ) {
-		switch ( $data[ 'type' ] ) {
+		switch ( $data[ 'wttype' ] ) {
 			case 'extension':
-				exec( 'git clone --branch ' . $data[ 'branch' ]
+				exec( 'git clone --branch ' . $data[ 'wtbranch' ]
 					. 'https://github.com/wikimedia/mediawiki-extensions-'
-					. $data[ 'name' ] . ' ../extensions/' . $data[ 'name' ] );
-				if ( $data[ 'commit' ] && $data[ 'commit' ] !== 'HEAD' ) {
+					. $data[ 'wtname' ] . ' ../extensions/' . $data[ 'wtname' ] );
+				if ( $data[ 'wtcommit' ] && $data[ 'wtcommit' ] !== 'HEAD' ) {
 					exec(
-						'cd ' . ' ../extensions/' . ' && git checkout ' . $data[ 'commit' ]
+						'cd ' . ' ../extensions/' . ' && git checkout ' . $data[ 'wtcommit' ]
 					);
 				}
 				break;
 			case 'skin':
-				exec( 'git clone --branch ' . $data[ 'branch' ]
+				exec( 'git clone --branch ' . $data[ 'wtbranch' ]
 					. 'https://github.com/wikimedia/mediawiki-skins-'
-					. $data[ 'name' ] . ' ../skins/' . $data[ 'name' ] );
-				if ( $data[ 'commit' ] && $data[ 'commit' ] !== 'HEAD' ) {
+					. $data[ 'wtname' ] . ' ../skins/' . $data[ 'wtname' ] );
+				if ( $data[ 'wtcommit' ] && $data[ 'wtcommit' ] !== 'HEAD' ) {
 					exec(
-						'cd ' . ' ../skins/' . ' && git checkout ' . $data[ 'commit' ]
+						'cd ' . ' ../skins/' . ' && git checkout ' . $data[ 'wtcommit' ]
 					);
 				}
 				break;
@@ -131,10 +131,7 @@ class WikitweakAPI extends ApiBase {
 		if ( !file_exists( $updateScript ) ) {
 			$this->dieWithError( 'Could not find the update.php script at ' . $updateScript );
 		}
-
-		$cmd = escapeshellcmd( "$phpBinary $updateScript" );
-
-		exec( $cmd . " 2>&1", $output, $status );
+		exec( "$phpBinary $updateScript" );
 	}
 
 	/**
@@ -158,12 +155,12 @@ class WikitweakAPI extends ApiBase {
 	 * @return void
 	 */
 	function delete( $data ) {
-		switch ( $data[ 'type' ] ) {
+		switch ( $data[ 'wttype' ] ) {
 			case 'extension':
-				exec( 'rm -rf ' . '../extensions/' . $data[ 'name' ] );
+				exec( 'rm -rf ' . '../extensions/' . $data[ 'wtname' ] );
 				break;
 			case 'skin':
-				exec( 'rm -rf ' . '../skins/' . $data[ 'name' ] );
+				exec( 'rm -rf ' . '../skins/' . $data[ 'wtname' ] );
 				break;
 			default:
 				break;
@@ -219,32 +216,34 @@ class WikitweakAPI extends ApiBase {
 	 */
 	public function getAllowedParams() {
 		return [
-			'action' => [
-			],
-			'name' => [
+			'wtaction' => [
 				ParamValidator::PARAM_REQUIRED => true,
 				ParamValidator::PARAM_TYPE => 'string',
 			],
-			'type' => [
+			'wtname' => [
 				ParamValidator::PARAM_REQUIRED => true,
 				ParamValidator::PARAM_TYPE => 'string',
 			],
-			'bundled' => [
+			'wttype' => [
 				ParamValidator::PARAM_REQUIRED => true,
-				ParamValidator::PARAM_TYPE => 'boolean',
-			],
-			'dbupdate' => [
-				ParamValidator::PARAM_REQUIRED => true,
-				ParamValidator::PARAM_TYPE => 'boolean',
-			],
-			'composer' => [
-				ParamValidator::PARAM_REQUIRED => true,
-				ParamValidator::PARAM_TYPE => 'boolean',
-			],
-			'commit' => [
 				ParamValidator::PARAM_TYPE => 'string',
 			],
-			'branch' => [
+			'wtbundled' => [
+				ParamValidator::PARAM_REQUIRED => true,
+				ParamValidator::PARAM_TYPE => 'boolean',
+			],
+			'wtdbupdate' => [
+				ParamValidator::PARAM_REQUIRED => true,
+				ParamValidator::PARAM_TYPE => 'boolean',
+			],
+			'wtcomposer' => [
+				ParamValidator::PARAM_REQUIRED => true,
+				ParamValidator::PARAM_TYPE => 'boolean',
+			],
+			'wtcommit' => [
+				ParamValidator::PARAM_TYPE => 'string',
+			],
+			'wtbranch' => [
 				ParamValidator::PARAM_REQUIRED => true,
 				ParamValidator::PARAM_TYPE => 'string',
 			]
