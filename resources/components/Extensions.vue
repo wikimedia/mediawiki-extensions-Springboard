@@ -64,9 +64,15 @@ module.exports = {
     methods: {
         submit ( data ) {
             var api = new mw.Api();
+            var action = data['action'].toLowerCase();
+            if ( action == 'enable' ) {
+                action = 'install';
+            } else if ( action == 'disable' ) {
+                action = 'uninstall';  
+            }
             var payload = {
                 action: 'wikitweak',
-                wtaction: data['action'].toLowerCase(),
+                wtaction: action,
                 wtname: data['name'],
                 wtcommit: data['commit'],
                 wtdbupdate: data['dbupdate'],

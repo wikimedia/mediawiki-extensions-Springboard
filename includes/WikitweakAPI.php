@@ -34,8 +34,8 @@ class WikitweakAPI extends ApiBase {
 
 		$registry = ExtensionRegistry::getInstance();
 		$func = $type === 'extension' ? 'wfLoadExtension' : 'wfLoadSkin';
-		$endPath = 'extension' ? 'extensions' : 'skins';
-		$line = "$func( '$name', '$extensionRoot/$endPath/$name' );";
+		$endPath = $type === 'extension' ? 'extensions' : 'skins';
+		$line = "$func( '$name', '$extensionRoot/$endPath/$name/$type.json' );";
 
 		$lines = file_exists( $this->loaderFile )
 			? array_filter( file( $this->loaderFile,
@@ -101,7 +101,7 @@ class WikitweakAPI extends ApiBase {
 			case 'extension':
 				try {
 					exec( 'git clone --branch ' . $data[ 'wtbranch' ]
-						. 'https://github.com/wikimedia/mediawiki-extensions-'
+						. ' https://github.com/wikimedia/mediawiki-extensions-'
 						. $data[ 'wtname' ] . ' '. $extensionRoot . '//extensions/' . $data[ 'wtname' ] );
 					if ( $data[ 'wtcommit' ] && $data[ 'wtcommit' ] !== 'HEAD' ) {
 						exec(
@@ -114,7 +114,7 @@ class WikitweakAPI extends ApiBase {
 				break;
 			case 'skin':
 				exec( 'git clone --branch ' . $data[ 'wtbranch' ]
-					. 'https://github.com/wikimedia/mediawiki-skins-'
+					. ' https://github.com/wikimedia/mediawiki-skins-'
 					. $data[ 'wtname' ] . ' ../skins/' . $data[ 'wtname' ] );
 				if ( $data[ 'wtcommit' ] && $data[ 'wtcommit' ] !== 'HEAD' ) {
 					exec(
@@ -133,7 +133,7 @@ class WikitweakAPI extends ApiBase {
 	 * @return void
 	 */
 	function dbUpdate() {
-		$mediawikiRoot = dirname( __DIR__, 2 );
+		$mediawikiRoot = dirname( __DIR__, 3 );
 		$phpBinary = PHP_BINARY;
 		$updateScript = "$mediawikiRoot/maintenance/update.php";
 
