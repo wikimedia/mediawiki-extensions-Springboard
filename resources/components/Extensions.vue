@@ -46,7 +46,6 @@ module.exports = {
                 installActionName = 'Enable';
                 uninstallActionName = 'Disable';
             }
-            console.log(updatedMap);
             updatedMap['action'] = updatedMap['exists']
                 ? { ...mapCopy, action: uninstallActionName }
                 : { ...mapCopy, action: installActionName }
