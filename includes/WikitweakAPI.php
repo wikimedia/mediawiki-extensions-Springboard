@@ -13,6 +13,7 @@
  namespace MediaWiki\Extension\Wikitweak;
 
  use ApiBase;
+ use ExtensionRegistry;
  use Wikimedia\ParamValidator\ParamValidator;
 
  /**
@@ -20,77 +21,69 @@
   */
 class WikitweakAPI extends ApiBase {
 
+	private $loaderFile = __DIR__ . '/CustomLoader.php';
+
 	function execute() {
 		$data = $this->extractRequestParams();
+		$type = $data[ 'type' ];
+		$name = $data[ 'name' ];
+		$action = $data[ 'action' ];
 
-		if ( $data[ 'action' ] == 'install' ) {
-			if ( $data[ 'bundled' ] == true ) {
-				// Just enable and do not try to download
-			} else {
-				// Clone first
-				$this->download( $data );
-				// Enable
+		$registry = ExtensionRegistry::getInstance();
+		$func = $type === 'extension' ? 'wfLoadExtension' : 'wfLoadSkin';
+		$line = "$func( '$name' );";
+
+		$lines = file_exists( $this->loaderFile )
+			? array_filter( file( $this->loaderFile,
+			FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES ), fn( $l ) => trim( $l ) !== '<?php' )
+			: [];
+
+		$inLoader = in_array( $line, $lines );
+		$isLoaded = $registry->isLoaded( $name );
+
+		if ( $action === 'install' ) {
+			if ( $isLoaded && !$inLoader ) {
+				$this->dieWithError( `$name is already loaded elsewhere (LocalSettings.php)` );
 			}
+			if ( $inLoader ) {
+				$this->dieWithError( `$name is already installed` );
+			}
+			$lines[] = $line;
+
+			if ( $data[ 'bundled' ] != false ) {
+				$this->download( $data );
+			}
+
+		} else {
+			if ( $isLoaded && !$inLoader ) {
+				$this->dieWithError( `$name is loaded elsewhere (LocalSettings.php); not disabling.` );
+			}
+			if ( !$inLoader ) {
+				$this->dieWithError( `$name is not installed yet` );
+			}
+			$lines = array_filter( $lines, fn( $l ) => trim( $l ) !== $line );
+		}
+
+		file_put_contents( $this->loaderFile, "<?php\n" . implode( "\n", $lines ) . "\n" );
+
+		if ( $action == 'install' ) {
 			if ( $data[ 'dbupdate' ] == true ) {
 				$this->dbUpdate();
 			}
 			if ( $data[ 'composer' ] == true ) {
 				$this->composerInstall();
 			}
-		} elseif ( $data[ 'action' ] == 'uninstall' ) {
-			if ( $data[ 'bundled' ] == true ) {
-				// Just disable and do not delete any directory
-			} else {
-				// Disable first
-				// Delete the directory
-				$this->delete( $data );
-			}
-		} else {
-			// Throw an error in response here
 		}
 
 		$result = $this->getResult();
 		$result->addValue(
 			null,
 			$this->getModuleName(),
-			[]
+			[
+				'action' => $action,
+				'result' => 'success'
+			]
 		);
-	}
-
-	/**
-	 * Enable an extension or skin
-	 * @param array $data
-	 * @return void
-	 */
-	function enable( $data ) {
-		switch ( $data[ 'type' ] ) {
-			case 'extension':
-				wfLoadExtension( $data[ 'name' ] );
-				break;
-			case 'skin':
-				wfLoadSkin( $data[ 'name' ] );
-				break;
-			default:
-				break;
-		}
-	}
-
-	/**
-	 * Disable an extension or skin
-	 * @param array $data
-	 * @return void
-	 */
-	function disable( $data ) {
-		switch ( $data[ 'type' ] ) {
-			case 'extension':
-				wfLoadExtension( $data[ 'name' ] );
-				break;
-			case 'skin':
-				wfLoadSkin( $data[ 'name' ] );
-				break;
-			default:
-				break;
-		}
 	}
 
 	/**
@@ -121,6 +114,7 @@ class WikitweakAPI extends ApiBase {
 				}
 				break;
 			default:
+				$this->dieWithError( 'Invalid type. Available types => [extension, skin]' );
 				break;
 		}
 	}
@@ -130,6 +124,17 @@ class WikitweakAPI extends ApiBase {
 	 * @return void
 	 */
 	function dbUpdate() {
+		$mediawikiRoot = dirname( __DIR__, 2 );
+		$phpBinary = PHP_BINARY;
+		$updateScript = "$mediawikiRoot/maintenance/update.php";
+
+		if ( !file_exists( $updateScript ) ) {
+			$this->dieWithError( `Could not find the update.php script at $updateScript` );
+		}
+
+		$cmd = escapeshellcmd( "$phpBinary $updateScript" );
+
+		exec( $cmd . " 2>&1", $output, $status );
 	}
 
 	/**
@@ -137,6 +142,14 @@ class WikitweakAPI extends ApiBase {
 	 * @return void
 	 */
 	function composerInstall() {
+		$extensionRoot = dirname( __DIR__, 1 );
+		$composerFilePath = "$extensionRoot/composer.json";
+
+		if ( !file_exists( $composerFilePath ) ) {
+			$this->dieWithError( `Could not find the update.php script at $composerFilePath` );
+		}
+		exec( `cd $extensionRoot` );
+		exec( 'composer install' );
 	}
 
 	/**
@@ -155,6 +168,36 @@ class WikitweakAPI extends ApiBase {
 			default:
 				break;
 		}
+	}
+
+	private static function isInCustomLoader( $type, $name ): bool {
+		$function = self::getLoaderFunction( $type );
+		$line = "$function( '$name' );";
+		$lines = self::loadLines();
+		return in_array( $line, $lines );
+	}
+
+	private static function getLoaderFunction( $type ) {
+		return match ( strtolower( $type ) ) {
+			'extension' => 'wfLoadExtension',
+			'skin'      => 'wfLoadSkin',
+			default     => null,
+		};
+	}
+
+	private static function loadLines(): array {
+		if ( !file_exists( self::$loaderFile ) ) {
+			file_put_contents( self::$loaderFile, "<?php\n" );
+			return [];
+		}
+
+		$lines = file( self::$loaderFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES );
+		return array_filter( $lines, fn( $l ) => trim( $l ) !== "<?php" );
+	}
+
+	private static function writeLines( array $lines ): void {
+		$output = "<?php\n" . implode( "\n", $lines ) . "\n";
+		file_put_contents( self::$loaderFile, $output );
 	}
 
 	/**
