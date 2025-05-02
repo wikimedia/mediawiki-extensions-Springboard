@@ -13,6 +13,7 @@
  namespace MediaWiki\Extension\Wikitweak;
 
  use ApiBase;
+ use Exception;
  use ExtensionRegistry;
  use Wikimedia\ParamValidator\ParamValidator;
 
@@ -29,9 +30,12 @@ class WikitweakAPI extends ApiBase {
 		$name = $data[ 'wtname' ];
 		$action = $data[ 'wtaction' ];
 
+		$extensionRoot = dirname( __DIR__, 1 );
+
 		$registry = ExtensionRegistry::getInstance();
 		$func = $type === 'extension' ? 'wfLoadExtension' : 'wfLoadSkin';
-		$line = "$func( '$name' );";
+		$endPath = 'extension' ? 'extensions' : 'skins';
+		$line = "$func( '$name', '$extensionRoot/$endPath/$name' );";
 
 		$lines = file_exists( $this->loaderFile )
 			? array_filter( file( $this->loaderFile,
@@ -50,7 +54,7 @@ class WikitweakAPI extends ApiBase {
 			}
 			$lines[] = $line;
 
-			if ( $data[ 'bundled' ] != false ) {
+			if ( $data[ 'wtbundled' ] == false ) {
 				$this->download( $data );
 			}
 
@@ -92,15 +96,20 @@ class WikitweakAPI extends ApiBase {
 	 * @return void
 	 */
 	function download( $data ) {
+		$extensionRoot = dirname( __DIR__, 1 );
 		switch ( $data[ 'wttype' ] ) {
 			case 'extension':
-				exec( 'git clone --branch ' . $data[ 'wtbranch' ]
-					. 'https://github.com/wikimedia/mediawiki-extensions-'
-					. $data[ 'wtname' ] . ' ../extensions/' . $data[ 'wtname' ] );
-				if ( $data[ 'wtcommit' ] && $data[ 'wtcommit' ] !== 'HEAD' ) {
-					exec(
-						'cd ' . ' ../extensions/' . ' && git checkout ' . $data[ 'wtcommit' ]
-					);
+				try {
+					exec( 'git clone --branch ' . $data[ 'wtbranch' ]
+						. 'https://github.com/wikimedia/mediawiki-extensions-'
+						. $data[ 'wtname' ] . ' '. $extensionRoot . '//extensions/' . $data[ 'wtname' ] );
+					if ( $data[ 'wtcommit' ] && $data[ 'wtcommit' ] !== 'HEAD' ) {
+						exec(
+							'cd ' . $extensionRoot . '//extensions/' . ' && git checkout ' . $data[ 'wtcommit' ]
+						);
+					}
+				} catch (Exception $e) {
+					$this->dieWithError( $e->getMessage() );
 				}
 				break;
 			case 'skin':

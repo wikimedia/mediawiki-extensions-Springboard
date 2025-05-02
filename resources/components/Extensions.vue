@@ -9,8 +9,8 @@
 			<a :href="`https://www.mediawiki.org/wiki/Extension:${ item }`">{{ item }}</a>
 		</template>
         <template #item-action="{ item }">
-			<cdx-button v-if="item.exists" action="destructive" weight="primary">{{ item.action }}</cdx-button>
-			<cdx-button v-else action="progressive" weight="primary">{{ item.action }}</cdx-button>
+			<cdx-button v-if="item.exists" action="destructive" weight="primary" @click="submit(item)">{{ item.action }}</cdx-button>
+			<cdx-button v-else action="progressive" weight="primary" @click="submit(item)">{{ item.action }}</cdx-button>
 		</template>
 	</cdx-table>
 </template>
@@ -60,7 +60,29 @@ module.exports = {
                 {id: 'action', label: 'Action', sortable: true}
             ]
         };
-	}
+	},
+    methods: {
+        submit ( data ) {
+            var api = new mw.Api();
+            var payload = {
+                action: 'wikitweak',
+                wtaction: data['action'].toLowerCase(),
+                wtname: data['name'],
+                wtcommit: data['commit'],
+                wtdbupdate: data['dbupdate'],
+                wtcomposer: data['composer'] ?? false,
+                wtbranch: data['branch'],
+                wttype: 'extension',
+                wtbundled: data['bundled'] ?? false
+            };
+            api.postWithToken( 'csrf', payload ).then( function (res) {
+                mw.notify( res.wikitweak.result );
+              // Response handling
+            } ).fail( function ( code, msg ) {
+                mw.notify( api.getErrorMessage( msg ), { type: 'error' } );
+            } );
+        }
+    },
 };
 </script>
 
