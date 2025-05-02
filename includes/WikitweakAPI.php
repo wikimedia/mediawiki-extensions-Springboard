@@ -43,10 +43,10 @@ class WikitweakAPI extends ApiBase {
 
 		if ( $action === 'install' ) {
 			if ( $isLoaded && !$inLoader ) {
-				$this->dieWithError( `$name is already loaded elsewhere (LocalSettings.php)` );
+				$this->dieWithError( $name . ' is already loaded elsewhere (LocalSettings.php)' );
 			}
 			if ( $inLoader ) {
-				$this->dieWithError( `$name is already installed` );
+				$this->dieWithError( $name . ' is already installed' );
 			}
 			$lines[] = $line;
 
@@ -56,10 +56,10 @@ class WikitweakAPI extends ApiBase {
 
 		} else {
 			if ( $isLoaded && !$inLoader ) {
-				$this->dieWithError( `$name is loaded elsewhere (LocalSettings.php); not disabling.` );
+				$this->dieWithError( $name . 'is loaded elsewhere (LocalSettings.php); not disabling.' );
 			}
 			if ( !$inLoader ) {
-				$this->dieWithError( `$name is not installed yet` );
+				$this->dieWithError( $name . ' is not installed yet' );
 			}
 			$lines = array_filter( $lines, fn( $l ) => trim( $l ) !== $line );
 		}
@@ -129,7 +129,7 @@ class WikitweakAPI extends ApiBase {
 		$updateScript = "$mediawikiRoot/maintenance/update.php";
 
 		if ( !file_exists( $updateScript ) ) {
-			$this->dieWithError( `Could not find the update.php script at $updateScript` );
+			$this->dieWithError( 'Could not find the update.php script at ' . $updateScript );
 		}
 
 		$cmd = escapeshellcmd( "$phpBinary $updateScript" );
@@ -146,9 +146,9 @@ class WikitweakAPI extends ApiBase {
 		$composerFilePath = "$extensionRoot/composer.json";
 
 		if ( !file_exists( $composerFilePath ) ) {
-			$this->dieWithError( `Could not find the update.php script at $composerFilePath` );
+			$this->dieWithError( 'Could not find the update.php script at ' . $composerFilePath );
 		}
-		exec( `cd $extensionRoot` );
+		exec( 'cd ' . $extensionRoot );
 		exec( 'composer install' );
 	}
 
@@ -220,8 +220,6 @@ class WikitweakAPI extends ApiBase {
 	public function getAllowedParams() {
 		return [
 			'action' => [
-				ParamValidator::PARAM_REQUIRED => true,
-				ParamValidator::PARAM_TYPE => 'string',
 			],
 			'name' => [
 				ParamValidator::PARAM_REQUIRED => true,
