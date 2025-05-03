@@ -1,6 +1,6 @@
 vendor/
 node_modules/
 composer.lock
-CustomLoader.php
+includes/CustomLoader.php
 extensions/*
 skins/*
