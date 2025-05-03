@@ -69,8 +69,8 @@ module.exports = {
                 wtaction: data['action'].toLowerCase(),
                 wtname: data['name'],
                 wtcommit: data['commit'],
-                wtdbupdate: data['dbupdate'],
-                wtcomposer: data['composer'] ?? false,
+                wtdbupdate: data['additional steps'].includes('database update') ?? false,
+                wtcomposer: data['additional steps'].includes('composer update') ?? false,
                 wtbranch: data['branch'],
                 wttype: 'skin',
                 wtbundled: data['bundled'] ?? false
