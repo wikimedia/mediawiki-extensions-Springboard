@@ -9,7 +9,7 @@ skins.
 2) Add the following lines in **LocalSettings.php**  
 ```
 wfLoadExtension( 'Zest' );
-require_once('$wgScriptPath/extensions/Zest/includes/CustomLoader.php');
+require_once(__DIR__ . '/extensions/Zest/includes/CustomLoader.php');
 ```
 4) ✅ Done - Navigate to [Special:Version](https://www.mediawiki.org/wiki/Special:Version) on your wiki to verify that the extension is successfully installed.
 
