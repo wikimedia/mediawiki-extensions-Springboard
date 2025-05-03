@@ -102,23 +102,23 @@ class ZestAPI extends ApiBase {
 				try {
 					exec( 'git clone --branch ' . $data[ 'wtbranch' ]
 						. ' https://github.com/wikimedia/mediawiki-extensions-'
-						. $data[ 'wtname' ] . ' '. $extensionRoot . '//extensions/' . $data[ 'wtname' ] );
+						. $data[ 'wtname' ] . ' ' . $extensionRoot . '//extensions/' . $data[ 'wtname' ] );
 					if ( $data[ 'wtcommit' ] && $data[ 'wtcommit' ] !== 'HEAD' ) {
 						exec(
 							'cd ' . $extensionRoot . '//extensions/' . ' && git checkout ' . $data[ 'wtcommit' ]
 						);
 					}
-				} catch (Exception $e) {
+				} catch ( Exception $e ) {
 					$this->dieWithError( $e->getMessage() );
 				}
 				break;
 			case 'skin':
 				exec( 'git clone --branch ' . $data[ 'wtbranch' ]
 					. ' https://github.com/wikimedia/mediawiki-skins-'
-					. $data[ 'wtname' ] . ' ../skins/' . $data[ 'wtname' ] );
+					. $data[ 'wtname' ] . ' ' . $extensionRoot . '//skins/' . $data[ 'wtname' ] );
 				if ( $data[ 'wtcommit' ] && $data[ 'wtcommit' ] !== 'HEAD' ) {
 					exec(
-						'cd ' . ' ../skins/' . ' && git checkout ' . $data[ 'wtcommit' ]
+						'cd ' . $extensionRoot . '//skins/' . ' && git checkout ' . $data[ 'wtcommit' ]
 					);
 				}
 				break;
