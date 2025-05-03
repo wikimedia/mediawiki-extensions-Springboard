@@ -1,5 +1,5 @@
 {
-	"name": "mediawiki/wikitweak",
+	"name": "mediawiki/zest",
 	"type": "mediawiki-extension",
 	"description": "Allows users to install extensions and skins in their wiki",
 	"license": "GPL-2.0-or-later",

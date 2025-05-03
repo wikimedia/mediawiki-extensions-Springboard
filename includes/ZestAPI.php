@@ -1,6 +1,6 @@
 <?php
 /**
- * Special page for Wikitweak extension.
+ * Special page for Zest extension.
  *
  * @author  Jayanth Vikash Saminathan <jayanthvikashs@gmail.com>
  * @author  Naresh Kumar Babu <nk2indian@gmail.com>
@@ -10,7 +10,7 @@
  * @ingroup Extensions
  */
 
- namespace MediaWiki\Extension\Wikitweak;
+ namespace MediaWiki\Extension\Zest;
 
  use ApiBase;
  use Exception;
@@ -18,9 +18,9 @@
  use Wikimedia\ParamValidator\ParamValidator;
 
  /**
-  * @ingroup Wikitweak
+  * @ingroup Zest
   */
-class WikitweakAPI extends ApiBase {
+class ZestAPI extends ApiBase {
 
 	private $loaderFile = __DIR__ . '/CustomLoader.php';
 

@@ -1,6 +1,6 @@
 <?php
 /**
- * Special page for Wikitweak extension.
+ * Special page for Zest extension.
  *
  * @author  Jayanth Vikash Saminathan <jayanthvikashs@gmail.com>
  * @author  Naresh Kumar Babu <nk2indian@gmail.com>
@@ -10,7 +10,7 @@
  * @ingroup Extensions
  */
 
-namespace MediaWiki\Extension\Wikitweak;
+namespace MediaWiki\Extension\Zest;
 
 use ExtensionRegistry;
 use Html;
@@ -20,22 +20,22 @@ use Symfony\Component\Yaml\Yaml;
 
 include "CustomLoader.php";
 
-class SpecialWikitweak extends SpecialPage {
+class SpecialZest extends SpecialPage {
 	/**
 	 * @var string
 	 */
 	private $mwVersion;
 
 	public function __construct() {
-		parent::__construct( 'Wikitweak', 'wikitweak' );
+		parent::__construct( 'Zest', 'zest' );
 		$version = explode( '.', $this->getConfig()->get( 'Version' ) );
 		$this->mwVersion = "REL$version[0]_$version[1]";
 	}
 
 	public function execute( $query ) {
 		$user = $this->getUser();
-		if ( !$user->isAllowed( 'wikitweak' ) ) {
-			throw new PermissionsError( 'wikitweak' );
+		if ( !$user->isAllowed( 'zest' ) ) {
+			throw new PermissionsError( 'zest' );
 		}
 
 		$out = $this->getOutput();
@@ -52,11 +52,11 @@ class SpecialWikitweak extends SpecialPage {
 
 		$out->addJsConfigVars( 'WTExtensions', $recs[ 'extensions' ] );
 		$out->addJsConfigVars( 'WTSkins', $recs[ 'skins' ] );
-		$out->addModules( [ 'ext.Wikitweak' ] );
+		$out->addModules( [ 'ext.Zest' ] );
 
 		$out->addHTML(
 			Html::rawElement( 'div', [
-				'id' => 'wikitweak-vue-root'
+				'id' => 'zest-vue-root'
 			] )
 		);
 	}

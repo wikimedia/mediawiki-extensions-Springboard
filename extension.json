@@ -1,5 +1,5 @@
 {
-	"name": "Wikitweak",
+	"name": "Zest",
 	"version": "0.1",
 	"author": [
 		"Jayanth Vikash Saminathan",
@@ -7,8 +7,8 @@
 		"Sanjay Thiyagarajan",
         "Yaron Koren"
 	],
-	"url": "https://www.mediawiki.org/wiki/Extension:Wikitweak",
-	"descriptionmsg": "wikitweak-desc",
+	"url": "https://www.mediawiki.org/wiki/Extension:Zest",
+	"descriptionmsg": "zest-desc",
 	"license-name": "GPL-2.0-or-later",
 	"requires": {
 		"MediaWiki": ">= 1.41"
@@ -16,27 +16,27 @@
 	"type": "specialpage",
 	"GroupPermissions": {
 		"sysop": {
-			"wikitweak": true
+			"zest": true
 		}
 	},
 	"AvailableRights": [
-		"wikitweak"
+		"zest"
 	],
 	"config": {
 		"WTDistributionListURL": "https://www.mediawiki.org/wiki/Recommended_revisions/1.43"
 	},
 	"SpecialPages": {
-		"Wikitweak": {
-			"class": "MediaWiki\\Extension\\Wikitweak\\SpecialWikitweak"
+		"Zest": {
+			"class": "MediaWiki\\Extension\\Zest\\SpecialZest"
 		}
 	},
 	"MessagesDirs": {
-		"Wikitweak": [
+		"Zest": [
 			"i18n"
 		]
 	},
 	"ResourceModules": {
-		"ext.Wikitweak": {
+		"ext.Zest": {
 			"class": "MediaWiki\\ResourceLoader\\CodexModule",
 			"dependencies": [
 				"vue"
@@ -55,30 +55,30 @@
 				"CdxTable"
 			],
 			"messages": [
-				"wikitweak-extensions-tab-name",
-				"wikitweak-skins-tab-name"
+				"zest-extensions-tab-name",
+				"zest-skins-tab-name"
 			]
 		},
-		"ext.WikitweakStyles": {
+		"ext.ZestStyles": {
 			"styles": [
-				"ext.WikitweakStyles.less"
+				"ext.ZestStyles.less"
 			]
 		}
 	},
 	"APIModules": {
-		"wikitweak": {
-			"class": "MediaWiki\\Extension\\Wikitweak\\WikitweakAPI"
+		"zest": {
+			"class": "MediaWiki\\Extension\\Zest\\ZestAPI"
 		}
 	},
 	"ResourceFileModulePaths": {
 		"localBasePath": "resources",
-		"remoteExtPath": "Wikitweak/resources"
+		"remoteExtPath": "Zest/resources"
 	},
 	"ExtensionMessagesFiles": {
-		"WikitweakAlias": "Wikitweak.i18n.alias.php"
+		"ZestAlias": "Zest.i18n.alias.php"
 	},
 	"AutoloadNamespaces": {
-		"MediaWiki\\Extension\\Wikitweak\\": "includes"
+		"MediaWiki\\Extension\\Zest\\": "includes"
 	},
 	"manifest_version": 1
 }

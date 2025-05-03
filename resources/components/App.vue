@@ -1,10 +1,10 @@
 <template>
-	<div class="ext-wikitweak-app">
+	<div class="ext-zest-app">
 		<cdx-tabs v-model:active="currentTab">
 			<cdx-tab
 				v-for="tab in tabs"
 				:key="tab.name"
-				class="ext-wikitweak-app__tab"
+				class="ext-zest-app__tab"
 				:name="tab.name"
 				:label="tab.label"
 			>
@@ -32,13 +32,13 @@ module.exports = {
 		const tabs = [
 			{
 				name: 'extensions',
-				label: mw.msg( 'wikitweak-extensions-tab-name' ),
+				label: mw.msg( 'zest-extensions-tab-name' ),
 				component: Extensions,
                 active: true
 			},
 			{
 				name: 'skins',
-				label: mw.msg( 'wikitweak-skins-tab-name' ),
+				label: mw.msg( 'zest-skins-tab-name' ),
 				component: Skins
 			}
 		];
@@ -54,7 +54,7 @@ module.exports = {
 <style lang="less">
 @import 'mediawiki.skin.variables.less';
 
-.ext-wikitweak-app {
+.ext-zest-app {
 	&__tab {
 		padding: @spacing-100;
 	}

@@ -7,8 +7,8 @@
             "Yaron Koren"
 		]
 	},
-    "wikitweak": "{{doc-special|Wikitweak}}",
-	"wikitweak-desc": "{{desc|name=Wikitweak|url=https://www.mediawiki.org/wiki/Extension:Wikitweak}}\n{{Identical|Content page}}",
-    "wikitweak-extensions-tab-name": "Tab label for extensions",
-	"wikitweak-skins-tab-name": "Tab label for skins"
+    "zest": "{{doc-special|Zest}}",
+	"zest-desc": "{{desc|name=Zest|url=https://www.mediawiki.org/wiki/Extension:Zest}}\n{{Identical|Content page}}",
+    "zest-extensions-tab-name": "Tab label for extensions",
+	"zest-skins-tab-name": "Tab label for skins"
 }

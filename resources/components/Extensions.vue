@@ -71,7 +71,7 @@ module.exports = {
                 action = 'uninstall';  
             }
             var payload = {
-                action: 'wikitweak',
+                action: 'zest',
                 wtaction: action,
                 wtname: data['name'],
                 wtcommit: data['commit'],
@@ -82,7 +82,7 @@ module.exports = {
                 wtbundled: data['bundled'] ?? false
             };
             api.postWithToken( 'csrf', payload ).then( function (res) {
-                mw.notify( res.wikitweak.result );
+                mw.notify( res.zest.result );
               // Response handling
             } ).fail( function ( code, msg ) {
                 mw.notify( api.getErrorMessage( msg ), { type: 'error' } );
