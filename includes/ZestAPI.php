@@ -47,10 +47,10 @@ class ZestAPI extends ApiBase {
 
 		if ( $action === 'install' ) {
 			if ( $isLoaded && !$inLoader ) {
-				$this->dieWithError( $name . ' is already loaded elsewhere (LocalSettings.php)' );
+				$this->dieWithError( $this->msg( 'zest-api-error-loadedelsewhere', $name ) );
 			}
 			if ( $inLoader ) {
-				$this->dieWithError( $name . ' is already installed' );
+				$this->dieWithError( $this->msg( 'zest-api-error-alreadyinstalled', $name ) );
 			}
 			$lines[] = $line;
 
@@ -60,10 +60,10 @@ class ZestAPI extends ApiBase {
 
 		} else {
 			if ( $isLoaded && !$inLoader ) {
-				$this->dieWithError( $name . 'is loaded elsewhere (LocalSettings.php); not disabling.' );
+				$this->dieWithError( $this->msg( 'zest-api-error-loadedelsewhere', $name ) );
 			}
 			if ( !$inLoader ) {
-				$this->dieWithError( $name . ' is not installed yet' );
+				$this->dieWithError( $this->msg( 'zest-api-error-notinstalled', $name ) );
 			}
 			$lines = array_filter( $lines, fn( $l ) => trim( $l ) !== $line );
 		}
@@ -123,7 +123,7 @@ class ZestAPI extends ApiBase {
 				}
 				break;
 			default:
-				$this->dieWithError( 'Invalid type. Available types => [extension, skin]' );
+				$this->dieWithError( $this->msg( 'zest-api-error-invalidtype' ) );
 				break;
 		}
 	}
@@ -136,10 +136,6 @@ class ZestAPI extends ApiBase {
 		$mediawikiRoot = dirname( __DIR__, 3 );
 		$phpBinary = PHP_BINARY;
 		$updateScript = "$mediawikiRoot/maintenance/update.php";
-
-		if ( !file_exists( $updateScript ) ) {
-			$this->dieWithError( 'Could not find the update.php script at ' . $updateScript );
-		}
 		exec( "$phpBinary $updateScript" );
 	}
 
@@ -152,7 +148,7 @@ class ZestAPI extends ApiBase {
 		$composerFilePath = "$extensionRoot/composer.json";
 
 		if ( !file_exists( $composerFilePath ) ) {
-			$this->dieWithError( 'Could not find the update.php script at ' . $composerFilePath );
+			$this->dieWithError( $this->msg( 'zest-api-error-composerfile', $composerFilePath ) );
 		}
 		exec( 'cd ' . $extensionRoot );
 		exec( 'composer install' );

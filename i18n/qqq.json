@@ -10,5 +10,10 @@
     "zest": "{{doc-special|Zest}}",
 	"zest-desc": "{{desc|name=Zest|url=https://www.mediawiki.org/wiki/Extension:Zest}}\n{{Identical|Content page}}",
     "zest-extensions-tab-name": "Tab label for extensions",
-	"zest-skins-tab-name": "Tab label for skins"
+	"zest-skins-tab-name": "Tab label for skins",
+    "zest-api-error-loadedelsewhere": "API error message thrown when the extension or skin is loaded in LocalSettings.php. Parameters:\n* $1 - name of the extension / skin",
+	"zest-api-error-alreadyinstalled": "API error message thrown when the extension or skin is already installed. Parameters:\n* $1 - name of the extension / skin",
+	"zest-api-error-notinstalled": "API error message thrown when the extension or skin is not installed. PParameters:\n* $1 - name of the extension / skin",
+    "zest-api-error-invalidtype": "API error message thrown when the given type is invalid. Available types => [extension, skin]",
+    "zest-api-error-composerfile": "API error message thrown when it could not find the composer.json file. Paramerters:\n* $1 - name of the extension"
 }

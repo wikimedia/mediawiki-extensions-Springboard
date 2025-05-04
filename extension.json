@@ -56,7 +56,12 @@
 			],
 			"messages": [
 				"zest-extensions-tab-name",
-				"zest-skins-tab-name"
+				"zest-skins-tab-name",
+				"zest-api-error-loadedelsewhere",
+				"zest-api-error-alreadyinstalled",
+				"zest-api-error-notinstalled",
+				"zest-api-error-invalidtype",
+				"zest-api-error-composerfile"
 			]
 		},
 		"ext.ZestStyles": {

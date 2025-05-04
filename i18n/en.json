@@ -10,5 +10,11 @@
 	"zest": "Zest",
 	"zest-desc": "Allows users to install extensions and skins in their wiki",
 	"zest-extensions-tab-name": "Extensions",
-	"zest-skins-tab-name": "Skins"
+	"zest-skins-tab-name": "Skins",
+	"zest-api-error-loadedelsewhere": "$1 is already loaded elsewhere (LocalSettings.php)",
+	"zest-api-error-alreadyinstalled": "$1 is already installed",
+	"zest-api-error-notinstalled": "$1 is not installed",
+	"zest-api-error-invalidtype": "Invalid type. Available types => [extension, skin]",
+    "zest-api-error-composerfile": "Could not find the composer.json file in $1"
+
 }
