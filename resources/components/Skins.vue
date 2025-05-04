@@ -68,12 +68,13 @@ module.exports = {
                 action: 'springboard',
                 wtaction: data['action'].toLowerCase(),
                 wtname: data['name'],
+                wtrepo: data.hasOwnProperty('repository') ? data['repository'] : false,
                 wtcommit: data['commit'],
-                wtdbupdate: data['additional steps'].includes('database update') ?? false,
-                wtcomposer: data['additional steps'].includes('composer update') ?? false,
+                wtdbupdate: (data.hasOwnProperty('additional steps') && data['additional steps'].includes('database update')) ?? false,
+                wtcomposer: (data.hasOwnProperty('additional steps') && data['additional steps'].includes('composer update')) ?? false,
                 wtbranch: data['branch'],
                 wttype: 'skin',
-                wtbundled: data['bundled'] ?? false
+                wtbundled: data.hasOwnProperty('repository') ? data['bundled'] : false
             };
             api.postWithToken( 'csrf', payload ).then( function (res) {
                 mw.notify( res.springboard.result );

@@ -61,11 +61,11 @@ class SpecialSpringboard extends SpecialPage {
 		);
 	}
 
-	private function isPresent( string $name, array $loadedList) {
+	private function isPresent( string $name, array $loadedList ) {
 		$normalizedTarget = strtolower( str_replace( ' ', '', $name ) );
 
 		// var_dump($normalizedTarget);
-	
+
 		foreach ( $loadedList as $key => $info ) {
 			$normalizedKey = strtolower( str_replace( ' ', '', $key ) );
 			if ( $normalizedKey === $normalizedTarget ) {
@@ -80,7 +80,7 @@ class SpecialSpringboard extends SpecialPage {
 		// var_dump($loadedList);
 		foreach ( $items as $i => $entry ) {
 			foreach ( $entry as $name => $metadata ) {
-				$metadata['exists'] = $this->isPresent($name, $loadedList);
+				$metadata['exists'] = $this->isPresent( $name, $loadedList );
 				$items[$i] = [ $name => $metadata ];
 			}
 		}

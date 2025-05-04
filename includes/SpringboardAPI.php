@@ -99,10 +99,12 @@ class SpringboardAPI extends ApiBase {
 		$extensionRoot = dirname( __DIR__, 1 );
 		switch ( $data[ 'wttype' ] ) {
 			case 'extension':
+				$repositoryLink = isset( $data['wtrepo'] ) && $data['wtrepo']
+						? $data['wtrepo']
+						: 'https://github.com/wikimedia/mediawiki-extensions-' . $data['wtname'];
 				try {
 					exec( 'git clone --branch ' . $data[ 'wtbranch' ]
-						. ' https://github.com/wikimedia/mediawiki-extensions-'
-						. $data[ 'wtname' ] . ' ' . $extensionRoot . '//extensions/' . $data[ 'wtname' ] );
+						. ' ' . $repositoryLink . ' ' . $extensionRoot . '//extensions/' . $data[ 'wtname' ] );
 					if ( $data[ 'wtcommit' ] && $data[ 'wtcommit' ] !== 'HEAD' ) {
 						exec(
 							'cd ' . $extensionRoot . '//extensions/' . ' && git checkout ' . $data[ 'wtcommit' ]
@@ -113,9 +115,11 @@ class SpringboardAPI extends ApiBase {
 				}
 				break;
 			case 'skin':
+				$repositoryLink = isset( $data['wtrepo'] ) && $data['wtrepo']
+						? $data['wtrepo']
+						: 'https://github.com/wikimedia/mediawiki-skins-' . $data['wtname'];
 				exec( 'git clone --branch ' . $data[ 'wtbranch' ]
-					. ' https://github.com/wikimedia/mediawiki-skins-'
-					. $data[ 'wtname' ] . ' ' . $extensionRoot . '//skins/' . $data[ 'wtname' ] );
+					. ' ' . $repositoryLink . ' ' . $extensionRoot . '//skins/' . $data[ 'wtname' ] );
 				if ( $data[ 'wtcommit' ] && $data[ 'wtcommit' ] !== 'HEAD' ) {
 					exec(
 						'cd ' . $extensionRoot . '//skins/' . ' && git checkout ' . $data[ 'wtcommit' ]
@@ -220,6 +224,10 @@ class SpringboardAPI extends ApiBase {
 			],
 			'wtbranch' => [
 				ParamValidator::PARAM_REQUIRED => true,
+				ParamValidator::PARAM_TYPE => 'string',
+			],
+			'wtrepo' => [
+				ParamValidator::PARAM_REQUIRED => false,
 				ParamValidator::PARAM_TYPE => 'string',
 			]
 		];
