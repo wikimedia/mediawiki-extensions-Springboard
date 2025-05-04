@@ -13,7 +13,7 @@
 namespace MediaWiki\Extension\Springboard;
 
 use ExtensionRegistry;
-use Html\Html;
+use MediaWiki\Html\Html;
 use PermissionsError;
 use SpecialPage;
 use Symfony\Component\Yaml\Yaml;
