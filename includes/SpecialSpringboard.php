@@ -94,7 +94,17 @@ class SpecialSpringboard extends SpecialPage {
 	 */
 	private function fetchRecommendedPage() {
 		$configURL = $this->getConfig()->get( 'SBDistributionListURL' );
-		$wikitext = file_get_contents( $configURL );
+		if ( is_array( $configURL ) ) {
+			$wikitext = false;
+			// Get e.g. "1.23" from "1.23.4-alpha"
+			preg_match("/^\d\.\d+/", MW_VERSION, $match);
+			$currentVersion = $match[0];
+			if ( array_key_exists( $currentVersion, $configURL ) ) {
+				$wikitext = file_get_contents( $configURL[$currentVersion] );
+			}
+		} else {
+			$wikitext = file_get_contents( $configURL );
+		}
 		if ( $wikitext === false ) {
 			return [ 'extension' => [], 'skin' => [] ];
 		}
