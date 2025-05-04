@@ -24,6 +24,10 @@ git clone https://github.com/sanjay-thiyagarajan/Springboard.git
     chmod -R a+rxw *
    ```
 ## Configuration  
+```
+$WTDistributionListURL = "https://your-custom-list-url";
+```  
+Defaults to https://www.mediawiki.org/wiki/Recommended_revisions/1.43 (can be taken as an example too)
 ### Parameters
 #### User Rights  
 Allows users to use the "Springboard" page action in order to manage extensions and skins for the wiki. Defaults to:
