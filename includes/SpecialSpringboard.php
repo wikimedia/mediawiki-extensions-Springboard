@@ -93,7 +93,7 @@ class SpecialSpringboard extends SpecialPage {
 	 * @return array
 	 */
 	private function fetchRecommendedPage() {
-		$configURL = $this->getConfig()->get( 'WTDistributionListURL' );
+		$configURL = $this->getConfig()->get( 'SBDistributionListURL' );
 		$wikitext = file_get_contents( $configURL . '?action=raw' );
 		if ( $wikitext === false ) {
 			return [ 'extension' => [], 'skin' => [] ];
