@@ -94,7 +94,7 @@ class SpecialSpringboard extends SpecialPage {
 	 */
 	private function fetchRecommendedPage() {
 		$configURL = $this->getConfig()->get( 'SBDistributionListURL' );
-		$wikitext = file_get_contents( $configURL . '?action=raw' );
+		$wikitext = file_get_contents( $configURL );
 		if ( $wikitext === false ) {
 			return [ 'extension' => [], 'skin' => [] ];
 		}

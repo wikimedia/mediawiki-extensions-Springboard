@@ -23,7 +23,7 @@
 		"springboard"
 	],
 	"config": {
-		"SBDistributionListURL": "https://www.mediawiki.org/wiki/Recommended_revisions/1.43"
+		"SBDistributionListURL": "https://www.mediawiki.org/wiki/Recommended_revisions/1.43?oldid=7608672&action=raw"
 	},
 	"SpecialPages": {
 		"Springboard": {
