@@ -23,7 +23,7 @@
 		"springboard"
 	],
 	"config": {
-		"WTDistributionListURL": "https://www.mediawiki.org/wiki/Recommended_revisions/1.43"
+		"SBDistributionListURL": "https://www.mediawiki.org/wiki/Recommended_revisions/1.43"
 	},
 	"SpecialPages": {
 		"Springboard": {
