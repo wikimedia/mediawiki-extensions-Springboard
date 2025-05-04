@@ -65,7 +65,7 @@ module.exports = {
         submit ( data ) {
             var api = new mw.Api();
             var payload = {
-                action: 'zest',
+                action: 'springboard',
                 wtaction: data['action'].toLowerCase(),
                 wtname: data['name'],
                 wtcommit: data['commit'],
@@ -76,7 +76,7 @@ module.exports = {
                 wtbundled: data['bundled'] ?? false
             };
             api.postWithToken( 'csrf', payload ).then( function (res) {
-                mw.notify( res.zest.result );
+                mw.notify( res.springboard.result );
               // Response handling
             } ).fail( function ( code, msg ) {
                 mw.notify( api.getErrorMessage( msg ), { type: 'error' } );

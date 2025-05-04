@@ -1,6 +1,6 @@
 <?php
 /**
- * Special page for Zest extension.
+ * Special page for Springboard extension.
  *
  * @author  Jayanth Vikash Saminathan <jayanthvikashs@gmail.com>
  * @author  Naresh Kumar Babu <nk2indian@gmail.com>
@@ -10,7 +10,7 @@
  * @ingroup Extensions
  */
 
-namespace MediaWiki\Extension\Zest;
+namespace MediaWiki\Extension\Springboard;
 
 use ExtensionRegistry;
 use Html;
@@ -20,22 +20,22 @@ use Symfony\Component\Yaml\Yaml;
 
 include "CustomLoader.php";
 
-class SpecialZest extends SpecialPage {
+class SpecialSpringboard extends SpecialPage {
 	/**
 	 * @var string
 	 */
 	private $mwVersion;
 
 	public function __construct() {
-		parent::__construct( 'Zest', 'zest' );
+		parent::__construct( 'Springboard', 'springboard' );
 		$version = explode( '.', $this->getConfig()->get( 'Version' ) );
 		$this->mwVersion = "REL$version[0]_$version[1]";
 	}
 
 	public function execute( $query ) {
 		$user = $this->getUser();
-		if ( !$user->isAllowed( 'zest' ) ) {
-			throw new PermissionsError( 'zest' );
+		if ( !$user->isAllowed( 'springboard' ) ) {
+			throw new PermissionsError( 'springboard' );
 		}
 
 		$out = $this->getOutput();
@@ -52,11 +52,11 @@ class SpecialZest extends SpecialPage {
 
 		$out->addJsConfigVars( 'WTExtensions', $recs[ 'extensions' ] );
 		$out->addJsConfigVars( 'WTSkins', $recs[ 'skins' ] );
-		$out->addModules( [ 'ext.Zest' ] );
+		$out->addModules( [ 'ext.Springboard' ] );
 
 		$out->addHTML(
 			Html::rawElement( 'div', [
-				'id' => 'zest-vue-root'
+				'id' => 'springboard-vue-root'
 			] )
 		);
 	}

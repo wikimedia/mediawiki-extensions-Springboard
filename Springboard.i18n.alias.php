@@ -10,5 +10,5 @@ $specialPageAliases = [];
 
 /** English (English) */
 $specialPageAliases['en'] = [
-	'Zest' => [ 'Zest' ],
+	'Springboard' => [ 'Springboard' ],
 ];

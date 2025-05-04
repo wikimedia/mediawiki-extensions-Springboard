@@ -1,5 +1,5 @@
 {
-	"name": "Zest",
+	"name": "Springboard",
 	"version": "0.1",
 	"author": [
 		"Jayanth Vikash Saminathan",
@@ -7,8 +7,8 @@
 		"Sanjay Thiyagarajan",
         "Yaron Koren"
 	],
-	"url": "https://www.mediawiki.org/wiki/Extension:Zest",
-	"descriptionmsg": "zest-desc",
+	"url": "https://www.mediawiki.org/wiki/Extension:Springboard",
+	"descriptionmsg": "springboard-desc",
 	"license-name": "GPL-2.0-or-later",
 	"requires": {
 		"MediaWiki": ">= 1.41"
@@ -16,27 +16,27 @@
 	"type": "specialpage",
 	"GroupPermissions": {
 		"sysop": {
-			"zest": true
+			"springboard": true
 		}
 	},
 	"AvailableRights": [
-		"zest"
+		"springboard"
 	],
 	"config": {
 		"WTDistributionListURL": "https://www.mediawiki.org/wiki/Recommended_revisions/1.43"
 	},
 	"SpecialPages": {
-		"Zest": {
-			"class": "MediaWiki\\Extension\\Zest\\SpecialZest"
+		"Springboard": {
+			"class": "MediaWiki\\Extension\\Springboard\\SpecialSpringboard"
 		}
 	},
 	"MessagesDirs": {
-		"Zest": [
+		"Springboard": [
 			"i18n"
 		]
 	},
 	"ResourceModules": {
-		"ext.Zest": {
+		"ext.Springboard": {
 			"class": "MediaWiki\\ResourceLoader\\CodexModule",
 			"dependencies": [
 				"vue"
@@ -55,35 +55,35 @@
 				"CdxTable"
 			],
 			"messages": [
-				"zest-extensions-tab-name",
-				"zest-skins-tab-name",
-				"zest-api-error-loadedelsewhere",
-				"zest-api-error-alreadyinstalled",
-				"zest-api-error-notinstalled",
-				"zest-api-error-invalidtype",
-				"zest-api-error-composerfile"
+				"springboard-extensions-tab-name",
+				"springboard-skins-tab-name",
+				"springboard-api-error-loadedelsewhere",
+				"springboard-api-error-alreadyinstalled",
+				"springboard-api-error-notinstalled",
+				"springboard-api-error-invalidtype",
+				"springboard-api-error-composerfile"
 			]
 		},
-		"ext.ZestStyles": {
+		"ext.SpringboardStyles": {
 			"styles": [
-				"ext.ZestStyles.less"
+				"ext.SpringboardStyles.less"
 			]
 		}
 	},
 	"APIModules": {
-		"zest": {
-			"class": "MediaWiki\\Extension\\Zest\\ZestAPI"
+		"springboard": {
+			"class": "MediaWiki\\Extension\\Springboard\\SpringboardAPI"
 		}
 	},
 	"ResourceFileModulePaths": {
 		"localBasePath": "resources",
-		"remoteExtPath": "Zest/resources"
+		"remoteExtPath": "Springboard/resources"
 	},
 	"ExtensionMessagesFiles": {
-		"ZestAlias": "Zest.i18n.alias.php"
+		"SpringboardAlias": "Springboard.i18n.alias.php"
 	},
 	"AutoloadNamespaces": {
-		"MediaWiki\\Extension\\Zest\\": "includes"
+		"MediaWiki\\Extension\\Springboard\\": "includes"
 	},
 	"manifest_version": 1
 }

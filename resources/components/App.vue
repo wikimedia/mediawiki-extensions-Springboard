@@ -1,10 +1,10 @@
 <template>
-	<div class="ext-zest-app">
+	<div class="ext-springboard-app">
 		<cdx-tabs v-model:active="currentTab">
 			<cdx-tab
 				v-for="tab in tabs"
 				:key="tab.name"
-				class="ext-zest-app__tab"
+				class="ext-springboard-app__tab"
 				:name="tab.name"
 				:label="tab.label"
 			>
@@ -32,13 +32,13 @@ module.exports = {
 		const tabs = [
 			{
 				name: 'extensions',
-				label: mw.msg( 'zest-extensions-tab-name' ),
+				label: mw.msg( 'springboard-extensions-tab-name' ),
 				component: Extensions,
                 active: true
 			},
 			{
 				name: 'skins',
-				label: mw.msg( 'zest-skins-tab-name' ),
+				label: mw.msg( 'springboard-skins-tab-name' ),
 				component: Skins
 			}
 		];
@@ -54,7 +54,7 @@ module.exports = {
 <style lang="less">
 @import 'mediawiki.skin.variables.less';
 
-.ext-zest-app {
+.ext-springboard-app {
 	&__tab {
 		padding: @spacing-100;
 	}

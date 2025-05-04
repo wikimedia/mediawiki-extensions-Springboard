@@ -1,6 +1,6 @@
 <?php
 /**
- * Special page for Zest extension.
+ * Special page for Springboard extension.
  *
  * @author  Jayanth Vikash Saminathan <jayanthvikashs@gmail.com>
  * @author  Naresh Kumar Babu <nk2indian@gmail.com>
@@ -10,7 +10,7 @@
  * @ingroup Extensions
  */
 
- namespace MediaWiki\Extension\Zest;
+ namespace MediaWiki\Extension\Springboard;
 
  use ApiBase;
  use Exception;
@@ -18,9 +18,9 @@
  use Wikimedia\ParamValidator\ParamValidator;
 
  /**
-  * @ingroup Zest
+  * @ingroup Springboard
   */
-class ZestAPI extends ApiBase {
+class SpringboardAPI extends ApiBase {
 
 	private $loaderFile = __DIR__ . '/CustomLoader.php';
 
@@ -47,10 +47,10 @@ class ZestAPI extends ApiBase {
 
 		if ( $action === 'install' ) {
 			if ( $isLoaded && !$inLoader ) {
-				$this->dieWithError( $this->msg( 'zest-api-error-loadedelsewhere', $name ) );
+				$this->dieWithError( $this->msg( 'springboard-api-error-loadedelsewhere', $name ) );
 			}
 			if ( $inLoader ) {
-				$this->dieWithError( $this->msg( 'zest-api-error-alreadyinstalled', $name ) );
+				$this->dieWithError( $this->msg( 'springboard-api-error-alreadyinstalled', $name ) );
 			}
 			$lines[] = $line;
 
@@ -60,10 +60,10 @@ class ZestAPI extends ApiBase {
 
 		} else {
 			if ( $isLoaded && !$inLoader ) {
-				$this->dieWithError( $this->msg( 'zest-api-error-loadedelsewhere', $name ) );
+				$this->dieWithError( $this->msg( 'springboard-api-error-loadedelsewhere', $name ) );
 			}
 			if ( !$inLoader ) {
-				$this->dieWithError( $this->msg( 'zest-api-error-notinstalled', $name ) );
+				$this->dieWithError( $this->msg( 'springboard-api-error-notinstalled', $name ) );
 			}
 			$lines = array_filter( $lines, fn( $l ) => trim( $l ) !== $line );
 		}
@@ -123,7 +123,7 @@ class ZestAPI extends ApiBase {
 				}
 				break;
 			default:
-				$this->dieWithError( $this->msg( 'zest-api-error-invalidtype' ) );
+				$this->dieWithError( $this->msg( 'springboard-api-error-invalidtype' ) );
 				break;
 		}
 	}
@@ -148,7 +148,7 @@ class ZestAPI extends ApiBase {
 		$composerFilePath = "$extensionRoot/composer.json";
 
 		if ( !file_exists( $composerFilePath ) ) {
-			$this->dieWithError( $this->msg( 'zest-api-error-composerfile', $composerFilePath ) );
+			$this->dieWithError( $this->msg( 'springboard-api-error-composerfile', $composerFilePath ) );
 		}
 		exec( 'cd ' . $extensionRoot );
 		exec( 'composer install' );

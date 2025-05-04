@@ -1,4 +1,4 @@
-[[Zest 0.1]]
+[[Springboard 0.1]]
 
 Contents:
 * Disclaimer
@@ -8,7 +8,7 @@ Contents:
 
 == Disclaimer ==
 
-There is no guarantee that any of the Zest functionality will
+There is no guarantee that any of the Springboard functionality will
 work on your system. 
 
 == Requirements ==
@@ -17,12 +17,12 @@ The extension requires MediaWiki 1.41 or greater.
 
 == Installation ==
 
-(1) Extract the archive to obtain the directory "Zest" that contains
+(1) Extract the archive to obtain the directory "Springboard" that contains
     all relevant files. Copy this directory (or extract/download it) to
     "[wikipath]/extensions/".
 (2) Insert the following line into the file
     "[wikipath]/LocalSettings.php":
-        wfLoadExtension( 'Zest' );
+        wfLoadExtension( 'Springboard' );
 
 == Contact ==
 
