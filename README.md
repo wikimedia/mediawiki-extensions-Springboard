@@ -25,7 +25,7 @@ git clone https://github.com/sanjay-thiyagarajan/Springboard.git
    ```
 ## Configuration  
 ```
-$WTDistributionListURL = "https://your-custom-list-url";
+$SBDistributionListURL = "https://your-custom-list-url";
 ```  
 Defaults to https://www.mediawiki.org/wiki/Recommended_revisions/1.43 (can be taken as an example too)
 ### Parameters
