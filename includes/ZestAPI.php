@@ -176,36 +176,6 @@ class ZestAPI extends ApiBase {
 		}
 	}
 
-	private static function isInCustomLoader( $type, $name ): bool {
-		$function = self::getLoaderFunction( $type );
-		$line = "$function( '$name' );";
-		$lines = self::loadLines();
-		return in_array( $line, $lines );
-	}
-
-	private static function getLoaderFunction( $type ) {
-		return match ( strtolower( $type ) ) {
-			'extension' => 'wfLoadExtension',
-			'skin'      => 'wfLoadSkin',
-			default     => null,
-		};
-	}
-
-	private static function loadLines(): array {
-		if ( !file_exists( self::$loaderFile ) ) {
-			file_put_contents( self::$loaderFile, "<?php\n" );
-			return [];
-		}
-
-		$lines = file( self::$loaderFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES );
-		return array_filter( $lines, fn( $l ) => trim( $l ) !== "<?php" );
-	}
-
-	private static function writeLines( array $lines ): void {
-		$output = "<?php\n" . implode( "\n", $lines ) . "\n";
-		file_put_contents( self::$loaderFile, $output );
-	}
-
 	/**
 	 * @inheritDoc
 	 */

@@ -61,10 +61,26 @@ class SpecialZest extends SpecialPage {
 		);
 	}
 
+	private function isPresent( string $name, array $loadedList) {
+		$normalizedTarget = strtolower( str_replace( ' ', '', $name ) );
+
+		// var_dump($normalizedTarget);
+	
+		foreach ( $loadedList as $key => $info ) {
+			$normalizedKey = strtolower( str_replace( ' ', '', $key ) );
+			if ( $normalizedKey === $normalizedTarget ) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	private function addExistsFlagToItems( $items ) {
+		$loadedList = ExtensionRegistry::getInstance()->getAllThings();
+		// var_dump($loadedList);
 		foreach ( $items as $i => $entry ) {
 			foreach ( $entry as $name => $metadata ) {
-				$metadata['exists'] = ExtensionRegistry::getInstance()->isLoaded( $name ) ? true : false;
+				$metadata['exists'] = $this->isPresent($name, $loadedList);
 				$items[$i] = [ $name => $metadata ];
 			}
 		}
