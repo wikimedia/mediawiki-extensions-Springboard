@@ -33,6 +33,7 @@ class SpecialSpringboard extends SpecialPage {
 	}
 
 	public function execute( $query ) {
+		$this->setHeaders();
 		$user = $this->getUser();
 		if ( !$user->isAllowed( 'springboard' ) ) {
 			throw new PermissionsError( 'springboard' );
