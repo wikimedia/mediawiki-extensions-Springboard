@@ -58,6 +58,10 @@ class SpringboardAPI extends ApiBase {
 				$this->download( $data );
 			}
 
+			if ( isset( $data['wtcomposerenabled'] ) && $data['wtcomposerenabled'] ) {
+				$lines[] = "enableSemantics( '" . $this->getConfig()->get( 'Server' ) . "' );";
+			}
+
 		} else {
 			if ( $isLoaded && !$inLoader ) {
 				$this->dieWithError( $this->msg( 'springboard-api-error-loadedelsewhere', $name ) );
@@ -99,6 +103,11 @@ class SpringboardAPI extends ApiBase {
 		$extensionRoot = dirname( __DIR__, 1 );
 		switch ( $data[ 'wttype' ] ) {
 			case 'extension':
+				if ( isset( $data['wtcomposerenabled'] ) && $data['wtcomposerenabled'] ) {
+					$composerCmd = 'cd ' . $extensionRoot . '/extensions && /usr/bin/composer --no-interaction require ' . $data['wtcomposerrepository']
+						. ':' . $data['wtcomposerversion'];
+					exec( $composerCmd, $output, $code );
+				} else {
 				$repositoryLink = isset( $data['wtrepo'] ) && $data['wtrepo']
 						? $data['wtrepo']
 						: 'https://github.com/wikimedia/mediawiki-extensions-' . $data['wtname'];
@@ -112,6 +121,7 @@ class SpringboardAPI extends ApiBase {
 					}
 				} catch ( Exception $e ) {
 					$this->dieWithError( $e->getMessage() );
+				}
 				}
 				break;
 			case 'skin':
@@ -227,6 +237,18 @@ class SpringboardAPI extends ApiBase {
 				ParamValidator::PARAM_TYPE => 'string',
 			],
 			'wtrepo' => [
+				ParamValidator::PARAM_REQUIRED => false,
+				ParamValidator::PARAM_TYPE => 'string',
+			],
+			'wtcomposerenabled' => [
+				ParamValidator::PARAM_REQUIRED => false,
+				ParamValidator::PARAM_TYPE => 'boolean',
+			],
+			'wtcomposerrepository' => [
+				ParamValidator::PARAM_REQUIRED => false,
+				ParamValidator::PARAM_TYPE => 'string',
+			],
+			'wtcomposerversion' => [
 				ParamValidator::PARAM_REQUIRED => false,
 				ParamValidator::PARAM_TYPE => 'string',
 			]

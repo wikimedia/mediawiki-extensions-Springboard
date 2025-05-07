@@ -70,6 +70,7 @@ module.exports = {
             } else if ( action == 'disable' ) {
                 action = 'uninstall';  
             }
+            console.log(data);
             var payload = {
                 action: 'springboard',
                 wtaction: action,
@@ -80,8 +81,12 @@ module.exports = {
                 wtcomposer: (data.hasOwnProperty('additional steps') && data['additional steps'].includes('composer update')) ?? false,
                 wtbranch: data['branch'],
                 wttype: 'extension',
-                wtbundled: data.hasOwnProperty('repository') ? data['bundled'] : false
+                wtbundled: data.hasOwnProperty('bundled') ? data['bundled'] : false,
+                wtcomposerenabled: data.hasOwnProperty('composer-enabled') ? data['composer-enabled'] : false,
+                wtcomposerrepository: data.hasOwnProperty('composer-repository') ? data['composer-repository'] : null,
+                wtcomposerversion: data.hasOwnProperty('composer-version') ? data['composer-version'] : null,
             };
+            console.log(payload);
             api.postWithToken( 'csrf', payload ).then( function (res) {
                 mw.notify( res.springboard.result );
               // Response handling
