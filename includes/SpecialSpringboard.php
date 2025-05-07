@@ -18,8 +18,6 @@ use PermissionsError;
 use SpecialPage;
 use Symfony\Component\Yaml\Yaml;
 
-include "CustomLoader.php";
-
 class SpecialSpringboard extends SpecialPage {
 	/**
 	 * @var string
