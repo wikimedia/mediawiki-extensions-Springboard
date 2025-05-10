@@ -6,7 +6,7 @@
         :paginate="true"
 	>
         <template #item-name="{ item }">
-          <a :href="`https://www.mediawiki.org/wiki/Extension:${ item }`">{{ item }}</a>
+          <a :href="`${item.url}`">{{ item.label }}</a>
         </template>
         <template #item-action="{ item }">
 			<cdx-button v-if="item.exists" action="destructive" weight="primary" @click="submit(item)">{{ item.action }}</cdx-button>
@@ -33,7 +33,7 @@ const fetchWikidataMetadata = async (ids, userLang) => {
     action: 'wbgetentities',
     ids: ids.join('|'),
     format: 'json',
-    props: 'labels|descriptions',
+    props: 'labels|descriptions|claims',
     languages: `${userLang}|en`,
     origin: '*'
   });
@@ -45,9 +45,11 @@ const fetchWikidataMetadata = async (ids, userLang) => {
   for (const [id, entity] of Object.entries(data.entities)) {
     const labels = entity.labels || {};
     const descriptions = entity.descriptions || {};
+    const claims = entity.claims || {};
     result[id] = {
       label: labels[userLang]?.value || labels.en?.value || '',
-      description: descriptions[userLang]?.value || descriptions.en?.value || ''
+      description: descriptions[userLang]?.value || descriptions.en?.value || '',
+      url: claims?.P856?.[0].mainsnak.datavalue.value || null
     };
   }
   return result;
@@ -81,8 +83,11 @@ module.exports = {
           const name = Object.keys(key)[0];
           const meta = mergedData[wikidataid] || {};
           const updatedMap = { ...Object.values(key)[0],
-              name: meta.label || name,
-              desc: meta.description || ""
+              name: {
+                label: meta.label || name,
+                url: meta.url || `https://www.mediawiki.org/wiki/Extension:${ name }`
+              },
+              desc: meta.description || "",
           };
           return updatedMap;
       } );
