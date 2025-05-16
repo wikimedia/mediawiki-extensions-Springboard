@@ -135,7 +135,7 @@ module.exports = {
             var payload = {
                 action: 'springboard',
                 wtaction: action,
-                wtname: data['name'],
+                wtname: data['name']['label'],
                 wtrepo: data.hasOwnProperty('repository') ? data['repository'] : false,
                 wtcommit: data['commit'],
                 wtdbupdate: (data.hasOwnProperty('additional steps') && data['additional steps'].includes('database update')) ?? false,
