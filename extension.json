@@ -22,6 +22,14 @@
 	"AvailableRights": [
 		"springboard"
 	],
+	"Hooks": {
+		"AdminLinks": "adminlinks"
+	},
+	"HookHandlers": {
+		"adminlinks": {
+			"class": "MediaWiki\\Extension\\Springboard\\AdminLinksHooks"
+		}
+	},
 	"config": {
 		"SBDistributionListURL": {
 			"1.43": "https://www.mediawiki.org/wiki/Recommended_revisions/1.43?oldid=7608672&action=raw"
