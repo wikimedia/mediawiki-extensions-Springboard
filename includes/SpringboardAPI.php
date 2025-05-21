@@ -79,7 +79,7 @@ class SpringboardAPI extends ApiBase {
 				$this->dbUpdate();
 			}
 			if ( $data[ 'wtcomposer' ] == true ) {
-				$this->composerInstall();
+				$this->composerInstall( $name );
 			}
 		}
 
@@ -104,9 +104,10 @@ class SpringboardAPI extends ApiBase {
 		switch ( $data[ 'wttype' ] ) {
 			case 'extension':
 				if ( isset( $data['wtcomposerenabled'] ) && $data['wtcomposerenabled'] ) {
-					$composerCmd = 'cd ' . $extensionRoot . '/extensions && /usr/bin/composer --no-interaction require ' . $data['wtcomposerrepository']
-						. ':' . $data['wtcomposerversion'];
-					exec( $composerCmd, $output, $code );
+					$composerCmd = 'composer require ' . $data['wtcomposerrepository']
+						. ':' . $data['wtcomposerversion'] . " --no-interaction --working-dir=$extensionRoot/extensions";
+					exec( "composer config --no-plugins allow-plugins.composer/installers true --working-dir=$extensionRoot/extensions" );
+					exec( $composerCmd );
 				} else {
 				$repositoryLink = isset( $data['wtrepo'] ) && $data['wtrepo']
 						? $data['wtrepo']
@@ -155,17 +156,18 @@ class SpringboardAPI extends ApiBase {
 
 	/**
 	 * Run Composer install command to fetch the composer-based dependencies for the extension / skin
+	 * @param string $name
 	 * @return void
 	 */
-	function composerInstall() {
+	function composerInstall( $name ) {
 		$extensionRoot = dirname( __DIR__, 1 );
 		$composerFilePath = "$extensionRoot/composer.json";
 
 		if ( !file_exists( $composerFilePath ) ) {
 			$this->dieWithError( $this->msg( 'springboard-api-error-composerfile', $composerFilePath ) );
 		}
-		exec( 'cd ' . $extensionRoot );
-		exec( 'composer install' );
+		exec( "composer config --no-plugins allow-plugins.composer/installers true --working-dir=$extensionRoot/extensions/$name" );
+		exec( "composer install --working-dir=$extensionRoot/extensions/$name" );
 	}
 
 	/**
