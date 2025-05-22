@@ -11,7 +11,7 @@ skins.
 wfLoadExtension( 'Springboard' );
 require_once(__DIR__ . '/extensions/Springboard/includes/CustomLoader.php');
 ```
-4) ✅ Done - Navigate to [Special:Version](https://www.mediawiki.org/wiki/Special:Version) on your wiki to verify that the extension is successfully installed.
+3) ✅ Done - Navigate to [Special:Version](https://www.mediawiki.org/wiki/Special:Version) on your wiki to verify that the extension is successfully installed.
 
 Instead of downloading the zip archive you may also check this extension out via Git:
 ```
