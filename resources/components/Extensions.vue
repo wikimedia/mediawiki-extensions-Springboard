@@ -1,9 +1,12 @@
 <template>
-    <cdx-table
+  <cdx-table
+    class="cdx-docs-table-with-sort"
 		caption="Your custom list of extensions"
 		:columns="columns"
 		:data="data"
-        :paginate="true"
+    v-model:sort="sort"
+    @update:sort="onSort"
+    :paginate="true"
 	>
         <template #item-name="{ item }">
           <a :href="`${item.url}`">{{ item.label }}</a>
@@ -63,6 +66,7 @@ module.exports = {
         CdxButton
     },
 	setup() {
+		const sort = ref( { name: 'asc' } );
     let data = mw.config.get( 'WTExtensions' );
     const finalData = ref([]);
     const userLang = mw.config.get( 'wgUserLanguage' );
@@ -112,14 +116,47 @@ module.exports = {
       } );
       finalData.value = data;
     });
+    function onSort( newSort ) {
+      const sortKey = Object.keys( newSort )[ 0 ];
+      const sortOrder = newSort[ sortKey ];
+
+      function sortAlphabetically( columnId, sortDir ) {
+        return finalData.value.sort( ( a, b ) => {
+          const multiplier = sortDir === 'asc' ? 1 : -1;
+          if ( columnId === 'name' ) {
+            return multiplier * ( a[ columnId ].label.localeCompare( b[ columnId ].label ) );
+          }
+          return multiplier * ( a[ columnId ].localeCompare( b[ columnId ] ) );
+        } );
+      }
+
+      // If the new sort order is 'none', go back to the initial sort.
+      if ( sortOrder === 'none' ) {
+        finalData.value = sortAlphabetically( 'name', 'asc' );
+        sort.value = { name: 'asc' };
+        return;
+      }
+
+      // Sort data.
+      switch ( sortKey ) {
+        case 'name':
+        case 'branch':
+          finalData.value = sortAlphabetically( sortKey, sortOrder );
+          return;
+        default:
+          return;
+      }
+    }
     return {
       'data': finalData,
+      sort,
+      onSort,
       'columns': [
-        {id: 'name', label: 'Extension Name', sortable: true},
-        {id: 'desc', label: 'Description', sortable: true},
-        {id: 'commit', label: 'Commit', sortable: true},
-        {id: 'branch', label: 'Branch', sortable: true},
-        {id: 'action', label: 'Action', sortable: true}
+        {id: 'name', label: 'Extension Name', allowSort: true},
+        {id: 'desc', label: 'Description'},
+        {id: 'commit', label: 'Commit'},
+        {id: 'branch', label: 'Branch', allowSort: true},
+        {id: 'action', label: 'Action'}
       ]
     };
 	},
@@ -157,4 +194,16 @@ module.exports = {
 
 <style lang="less">
 @import 'mediawiki.skin.variables.less';
+
+.cdx-docs-table-with-sort {
+	&__size {
+		&--positive {
+			color: @color-success;
+		}
+
+		&--negative {
+			color: @color-destructive;
+		}
+	}
+}
 </style>
