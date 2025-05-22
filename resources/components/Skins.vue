@@ -1,8 +1,11 @@
 <template>
     <cdx-table
+        class="cdx-docs-table-with-sort"
 		caption="Your custom list of skins"
 		:columns="columns"
 		:data="data"
+        v-model:sort="sort"
+        @update:sort="onSort"
         :paginate="true"
 	>
         <template #item-name="{ item }">
@@ -64,6 +67,7 @@ module.exports = {
         CdxButton
     },
 	setup() {
+        const sort = ref( { name: 'asc' } );
         let data = mw.config.get( 'WTSkins' );
         const finalData = ref([]);
         const userLang = mw.config.get( 'wgUserLanguage' );
@@ -113,13 +117,46 @@ module.exports = {
             });
             finalData.value = data;
         });
+        function onSort( newSort ) {
+            const sortKey = Object.keys( newSort )[ 0 ];
+            const sortOrder = newSort[ sortKey ];
+
+            function sortAlphabetically( columnId, sortDir ) {
+                return finalData.value.sort( ( a, b ) => {
+                const multiplier = sortDir === 'asc' ? 1 : -1;
+                if ( columnId === 'name' ) {
+                    return multiplier * ( a[ columnId ].label.localeCompare( b[ columnId ].label ) );
+                }
+                return multiplier * ( a[ columnId ].localeCompare( b[ columnId ] ) );
+                } );
+            }
+
+            // If the new sort order is 'none', go back to the initial sort.
+            if ( sortOrder === 'none' ) {
+                finalData.value = sortAlphabetically( 'name', 'asc' );
+                sort.value = { name: 'asc' };
+                return;
+            }
+
+            // Sort data.
+            switch ( sortKey ) {
+                case 'name':
+                case 'branch':
+                finalData.value = sortAlphabetically( sortKey, sortOrder );
+                return;
+                default:
+                return;
+            }
+        }
 		return {
             'data': finalData,
+            sort,
+            onSort,
             'columns': [
-                {id: 'name', label: 'Skin Name'},
+                {id: 'name', label: 'Skin Name', allowSort: true},
                 {id: 'desc', label: 'Description'},
                 {id: 'commit', label: 'Commit'},
-                {id: 'branch', label: 'Branch'},
+                {id: 'branch', label: 'Branch', allowSort: true},
                 {id: 'action', label: 'Action'}
             ]
         };
@@ -152,4 +189,16 @@ module.exports = {
 
 <style lang="less">
 @import 'mediawiki.skin.variables.less';
+
+.cdx-docs-table-with-sort {
+	&__size {
+		&--positive {
+			color: @color-success;
+		}
+
+		&--negative {
+			color: @color-destructive;
+		}
+	}
+}
 </style>
