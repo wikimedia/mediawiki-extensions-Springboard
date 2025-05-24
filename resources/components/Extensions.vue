@@ -18,9 +18,12 @@
           <a :href="`${item.url}`">{{ item.label }}</a>
         </template>
         <template #item-action="{ item }">
-			<cdx-button v-if="item.exists" action="destructive" :disabled="item.disabled" weight="primary" @click="submit(item)">{{ item.action }}</cdx-button>
-			<cdx-button v-else action="progressive" weight="primary" @click="submit(item)">{{ item.action }}</cdx-button>
-		</template>
+          <template v-if="!item.disabled">
+            <cdx-button v-if="item.exists" action="destructive" weight="primary" @click="submit(item)">{{ item.action }}</cdx-button>
+            <cdx-button v-else action="progressive" weight="primary" @click="submit(item)">{{ item.action }}</cdx-button>
+          </template>
+          <template v-else><p></p></template>
+		    </template>
 	</cdx-table>
 </template>
 
