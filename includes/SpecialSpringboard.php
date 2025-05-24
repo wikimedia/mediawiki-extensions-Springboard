@@ -19,6 +19,9 @@ use SpecialPage;
 use Symfony\Component\Yaml\Yaml;
 
 class SpecialSpringboard extends SpecialPage {
+
+	private $loaderFile = __DIR__ . '/CustomLoader.php';
+
 	/**
 	 * @var string
 	 */
@@ -42,11 +45,11 @@ class SpecialSpringboard extends SpecialPage {
 		$recs = $this->fetchRecommendedPage();
 
 		if ( isset( $recs['extensions'] ) ) {
-			$recs['extensions'] = $this->addExistsFlagToItems( $recs['extensions'] );
+			$recs['extensions'] = $this->addFlagsToItems( $recs['extensions'], 'extension' );
 		}
 
 		if ( isset( $recs['skins'] ) ) {
-			$recs['skins'] = $this->addExistsFlagToItems( $recs['skins'] );
+			$recs['skins'] = $this->addFlagsToItems( $recs['skins'], 'skin' );
 		}
 
 		$out->addJsConfigVars( 'WTExtensions', $recs[ 'extensions' ] );
@@ -74,12 +77,33 @@ class SpecialSpringboard extends SpecialPage {
 		return false;
 	}
 
-	private function addExistsFlagToItems( $items ) {
+	/**
+	 * Add exists flag for installed items and disabled flag for items installed without Springboard
+	 *
+	 * @param array $items
+	 * @param string $type
+	 *
+	 * @return array
+	 */
+	private function addFlagsToItems( $items, $type ) {
 		$loadedList = ExtensionRegistry::getInstance()->getAllThings();
-		// var_dump($loadedList);
+		$extensionRoot = dirname( __DIR__, 1 );
+		$func = $type === 'extension' ? 'wfLoadExtension' : 'wfLoadSkin';
+		$endPath = $type === 'extension' ? 'extensions' : 'skins';
+		$lines = file_exists( $this->loaderFile )
+			? array_filter( file( $this->loaderFile,
+			FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES ), fn( $l ) => trim( $l ) !== '<?php' )
+			: [];
+
 		foreach ( $items as $i => $entry ) {
 			foreach ( $entry as $name => $metadata ) {
-				$metadata['exists'] = $this->isPresent( $name, $loadedList );
+				$line = "$func( '$name', '$extensionRoot/$endPath/$name/$type.json' );";
+				$inLoader = in_array( $line, $lines );
+				$isInstalled = $this->isPresent( $name, $loadedList );
+				$metadata['exists'] = $isInstalled;
+				if ( $isInstalled && !$inLoader ) {
+					$metadata['disabled'] = true;
+				}
 				$items[$i] = [ $name => $metadata ];
 			}
 		}
@@ -96,7 +120,7 @@ class SpecialSpringboard extends SpecialPage {
 		if ( is_array( $configURL ) ) {
 			$wikitext = false;
 			// Get e.g. "1.23" from "1.23.4-alpha"
-			preg_match("/^\d\.\d+/", MW_VERSION, $match);
+			preg_match( "/^\d\.\d+/", MW_VERSION, $match );
 			$currentVersion = $match[0];
 			if ( array_key_exists( $currentVersion, $configURL ) ) {
 				$wikitext = file_get_contents( $configURL[$currentVersion] );

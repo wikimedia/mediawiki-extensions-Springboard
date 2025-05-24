@@ -12,7 +12,7 @@
 			<a :href="`${item.url}`">{{ item.label }}</a>
 		</template>
         <template #item-action="{ item }">
-			<cdx-button v-if="item.exists" action="destructive" weight="primary" @click="submit(item)">{{ item.action }}</cdx-button>
+			<cdx-button v-if="item.exists" action="destructive" :disabled="item.disabled" weight="primary" @click="submit(item)">{{ item.action }}</cdx-button>
 			<cdx-button v-else action="progressive" weight="primary" @click="submit(item)">{{ item.action }}</cdx-button>
 		</template>
 	</cdx-table>
@@ -111,8 +111,8 @@ module.exports = {
                     uninstallActionName = 'Disable';
                 }
                 updatedMap['action'] = updatedMap['exists']
-                    ? { ...mapCopy, action: uninstallActionName }
-                    : { ...mapCopy, action: installActionName }
+                    ? { ...mapCopy, action: uninstallActionName, disabled: updatedMap['disabled'] }
+                    : { ...mapCopy, action: installActionName, disabled: updatedMap['disabled'] }
                 return updatedMap;
             });
             finalData.value = data;
