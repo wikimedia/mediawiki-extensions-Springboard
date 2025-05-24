@@ -71,7 +71,9 @@
 				"springboard-api-error-alreadyinstalled",
 				"springboard-api-error-notinstalled",
 				"springboard-api-error-invalidtype",
-				"springboard-api-error-composerfile"
+				"springboard-api-error-composerfile",
+				"springboard-extensions-tab-search-placeholder",
+				"springboard-skins-tab-search-placeholder"
 			]
 		},
 		"ext.SpringboardStyles": {

@@ -1,4 +1,10 @@
 <template>
+  <cdx-text-input
+    v-model="searchString"
+    @input="search"
+    :placeholder="searchPlaceholder"
+    :clearable="true"
+  ></cdx-text-input>
   <cdx-table
     class="cdx-docs-table-with-sort"
 		caption="Your custom list of extensions"
@@ -20,7 +26,7 @@
 
 <script>
 const { ref, onMounted } = require( 'vue' );
-const { CdxTable, CdxButton } = require( '../codex.js' );
+const { CdxTable, CdxButton, CdxTextInput } = require( '../codex.js' );
 
 const chunkArray = (array, size) => {
   const chunks = [];
@@ -63,12 +69,15 @@ module.exports = {
 	name: 'Extensions',
 	components: {
         CdxTable,
-        CdxButton
+        CdxButton,
+        CdxTextInput
     },
 	setup() {
 		const sort = ref( { name: 'asc' } );
     let data = mw.config.get( 'WTExtensions' );
     const finalData = ref([]);
+    const allData = ref([]);
+    const searchString = ref('');
     const userLang = mw.config.get( 'wgUserLanguage' );
     let version = mw.config.get( 'wgVersion' ).split( '.' );
     const mwVersion = `REL${version[0]}_${version[1]}`;
@@ -115,7 +124,17 @@ module.exports = {
           return updatedMap;
       } );
       finalData.value = data;
+      allData.value = data;
     });
+    function search() {
+      finalData.value = allData.value;
+      const searchKey = searchString.value.trim();
+      if ( searchKey !== '' ) {
+          finalData.value = finalData.value.filter( ( item ) => {
+            return item.name.label.toLowerCase().startsWith( searchKey.toLowerCase() );
+          } );
+      }
+    }
     function onSort( newSort ) {
       const sortKey = Object.keys( newSort )[ 0 ];
       const sortOrder = newSort[ sortKey ];
@@ -149,6 +168,9 @@ module.exports = {
     }
     return {
       'data': finalData,
+      searchString,
+      search,
+      'searchPlaceholder': mw.msg('springboard-extensions-tab-search-placeholder'), 
       sort,
       onSort,
       'columns': [
