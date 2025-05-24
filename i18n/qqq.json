@@ -15,5 +15,7 @@
 	"springboard-api-error-alreadyinstalled": "API error message thrown when the extension or skin is already installed. Parameters:\n* $1 - name of the extension / skin",
 	"springboard-api-error-notinstalled": "API error message thrown when the extension or skin is not installed. PParameters:\n* $1 - name of the extension / skin",
     "springboard-api-error-invalidtype": "API error message thrown when the given type is invalid. Available types => [extension, skin]",
-    "springboard-api-error-composerfile": "API error message thrown when it could not find the composer.json file. Paramerters:\n* $1 - name of the extension"
+    "springboard-api-error-composerfile": "API error message thrown when it could not find the composer.json file. Paramerters:\n* $1 - name of the extension",
+	"springboard-extensions-tab-search-placeholder": "Placeholder text for the search box to filter extensions",
+	"springboard-skins-tab-search-placeholder": "Placeholder text for the search box to filter skins"
 }
