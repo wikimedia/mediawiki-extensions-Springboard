@@ -92,7 +92,7 @@ class SpecialSpringboard extends SpecialPage {
 	 * @return array
 	 */
 	private function fetchRecommendedPage() {
-		$configURL = $this->getConfig()->get( 'SBDistributionListURL' );
+		$configURL = $this->getConfig()->get( 'wgSpringboardURL' );
 		if ( is_array( $configURL ) ) {
 			$wikitext = false;
 			// Get e.g. "1.23" from "1.23.4-alpha"
