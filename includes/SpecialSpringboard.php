@@ -22,15 +22,9 @@ class SpecialSpringboard extends SpecialPage {
 
 	private $loaderFile = __DIR__ . '/CustomLoader.php';
 
-	/**
-	 * @var string
-	 */
-	private $mwVersion;
-
 	public function __construct() {
 		parent::__construct( 'Springboard', 'springboard' );
 		$version = explode( '.', $this->getConfig()->get( 'Version' ) );
-		$this->mwVersion = "REL$version[0]_$version[1]";
 	}
 
 	public function execute( $query ) {
