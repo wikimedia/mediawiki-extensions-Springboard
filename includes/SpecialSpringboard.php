@@ -45,8 +45,8 @@ class SpecialSpringboard extends SpecialPage {
 			$recs['skins'] = $this->addFlagsToItems( $recs['skins'], 'skin' );
 		}
 
-		$out->addJsConfigVars( 'WTExtensions', $recs[ 'extensions' ] );
-		$out->addJsConfigVars( 'WTSkins', $recs[ 'skins' ] );
+		$out->addJsConfigVars( 'SpringboardExtensions', $recs[ 'extensions' ] );
+		$out->addJsConfigVars( 'SpringboardSkins', $recs[ 'skins' ] );
 		$out->addModules( [ 'ext.Springboard' ] );
 
 		$out->addHTML(

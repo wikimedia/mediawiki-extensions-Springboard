@@ -77,7 +77,7 @@ module.exports = {
     },
 	setup() {
 		const sort = ref( { name: 'asc' } );
-    let data = mw.config.get( 'WTExtensions' );
+    let data = mw.config.get( 'SpringboardExtensions' );
     const finalData = ref([]);
     const allData = ref([]);
     const searchString = ref('');
