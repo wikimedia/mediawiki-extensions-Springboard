@@ -130,9 +130,13 @@ module.exports = {
                 // Trim commit hash to 7 characters
                 updatedMap[ 'commit' ] = updatedMap[ 'commit' ].slice(0,7);
                 let mapCopy = {...updatedMap};
+                let installActionName = "Install";
+                if ( 'bundled' in updatedMap ) { 
+                    installActionName = 'Enable';
+                }
                 updatedMap['action'] = updatedMap['exists']
                     ? { ...mapCopy, action: 'Disable', disabled: updatedMap['disabled'] }
-                    : { ...mapCopy, action: 'Enable', disabled: updatedMap['disabled'] }
+                    : { ...mapCopy, action: installActionName, disabled: updatedMap['disabled'] }
                 return updatedMap;
             });
             finalData.value = data;
