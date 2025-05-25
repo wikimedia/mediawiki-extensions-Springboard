@@ -59,4 +59,7 @@ module.exports = {
 		padding: @spacing-100;
 	}
 }
+.ext-springboard-app .cdx-table__header {
+  display: none;
+}
 </style>
