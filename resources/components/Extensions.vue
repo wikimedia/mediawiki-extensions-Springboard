@@ -149,7 +149,7 @@ module.exports = {
           if ( columnId === 'name' ) {
             return multiplier * ( a[ columnId ].label.localeCompare( b[ columnId ].label ) );
           }
-          return multiplier * ( a[ IDcolumnId ].localeCompare( b[ columnId ] ) );
+          return multiplier * ( a[ columnId ].localeCompare( b[ columnId ] ) );
         } );
       }
 
