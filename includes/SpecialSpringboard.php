@@ -53,7 +53,7 @@ class SpecialSpringboard extends SpecialPage {
 		}
 
 		$out->addJsConfigVars( 'SpringboardExtensions', $recs[ 'extensions' ] );
-		$out->addJsConfigVars( 'SprinbgoardSkins', $recs[ 'skins' ] );
+		$out->addJsConfigVars( 'SpringboardSkins', $recs[ 'skins' ] );
 		$out->addModules( [ 'ext.Springboard' ] );
 
 		$out->addHTML(
