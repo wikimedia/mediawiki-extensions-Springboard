@@ -1,35 +1,40 @@
 <template>
-    <cdx-text-input
-        v-model="searchString"
-        @input="search"
-        :placeholder="searchPlaceholder"
-        :clearable="true"
-    ></cdx-text-input>
-    <cdx-table
-        class="cdx-docs-table-with-sort"
-		:columns="columns"
-		:data="data"
-        v-model:sort="sort"
-        @update:sort="onSort"
-        :paginate="true"
-	>
-        <template #empty-state>{{ noDataMsg }}</template>
-        <template #item-name="{ item }">
-			<a :href="`${item.url}`">{{ item.label }}</a>
-		</template>
-        <template #item-action="{ item }">
-            <template v-if="!item.disabled">
-                <cdx-button v-if="item.exists" action="destructive" weight="primary" @click="submit(item)">{{ item.action }}</cdx-button>
-                <cdx-button v-else action="progressive" weight="primary" @click="submit(item)">{{ item.action }}</cdx-button>
+    <template v-if="!isFetched">
+        <cdx-progress-bar />
+    </template>
+    <template v-else>
+        <cdx-text-input
+            v-model="searchString"
+            @input="search"
+            :placeholder="searchPlaceholder"
+            :clearable="true"
+        ></cdx-text-input>
+        <cdx-table
+            class="cdx-docs-table-with-sort"
+            :columns="columns"
+            :data="data"
+            v-model:sort="sort"
+            @update:sort="onSort"
+            :paginate="true"
+        >
+            <template #empty-state>{{ noDataMsg }}</template>
+            <template #item-name="{ item }">
+                <a :href="`${item.url}`">{{ item.label }}</a>
             </template>
-            <template v-else><p></p></template>
-		</template>
-	</cdx-table>
+            <template #item-action="{ item }">
+                <template v-if="!item.disabled">
+                    <cdx-button v-if="item.exists" action="destructive" weight="primary" @click="submit(item)">{{ item.action }}</cdx-button>
+                    <cdx-button v-else action="progressive" weight="primary" @click="submit(item)">{{ item.action }}</cdx-button>
+                </template>
+                <template v-else><p></p></template>
+            </template>
+        </cdx-table>
+    </template>
 </template>
 
 <script>
 const { ref, onMounted } = require( 'vue' );
-const { CdxTable, CdxButton, CdxTextInput } = require( '../codex.js' );
+const { CdxTable, CdxButton, CdxTextInput, CdxProgressBar } = require( '../codex.js' );
 
 const chunkArray = (array, size) => {
   const chunks = [];
@@ -74,7 +79,8 @@ module.exports = {
 	components: {
         CdxTable,
         CdxButton,
-        CdxTextInput
+        CdxTextInput,
+        CdxProgressBar
     },
 	setup() {
         const sort = ref( { name: 'asc' } );
@@ -82,6 +88,7 @@ module.exports = {
         const finalData = ref([]);
         const allData = ref([]);
         const searchString = ref('');
+        const isFetched = ref(false);
         const userLang = mw.config.get( 'wgUserLanguage' );
         let version = mw.config.get( 'wgVersion' ).split( '.' );
 		const mwVersion = `REL${version[0]}_${version[1]}`;
@@ -95,6 +102,7 @@ module.exports = {
                     const metadata = await fetchWikidataMetadata(chunk, userLang);
                     Object.assign(mergedData, metadata);
                 }
+            isFetched.value = true;
             data = data.map( (key) => {
                 const wikidataid = Object.values(key)[0].wikidataid;
                 const name = Object.keys(key)[0];
@@ -184,6 +192,7 @@ module.exports = {
             'noDataMsg': mw.msg('springboard-no-data-message'),
             sort,
             onSort,
+            isFetched,
             'columns': [
                 {id: 'name', label: 'Skin Name', allowSort: true},
                 {id: 'desc', label: 'Description'},
