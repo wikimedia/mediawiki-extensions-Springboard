@@ -122,19 +122,19 @@ class SpecialSpringboard extends SpecialPage {
 			$wikitext = file_get_contents( $configURL );
 		}
 		if ( $wikitext === false ) {
-			return [ 'extension' => [], 'skin' => [] ];
+			return [ 'extensions' => [], 'skins' => [] ];
 		}
 
 		if ( !preg_match( '/<syntaxhighlight\s+lang=["\']yaml["\']>(.*?)<\/syntaxhighlight>/si', $wikitext, $matches ) ) {
-			return [ 'extension' => [], 'skin' => [] ];
+			return [ 'extensions' => [], 'skins' => [] ];
 		}
 
 		$yamlText = html_entity_decode( $matches[1], ENT_QUOTES | ENT_HTML5 );
 		try {
 			$parsed = Yaml::parse( $yamlText );
-			return $parsed ?? [ 'extension' => [], 'skin' => [] ];
+			return $parsed ?? [ 'extensions' => [], 'skins' => [] ];
 		} catch ( \Symfony\Component\Yaml\Exception\ParseException $e ) {
-			return [ 'extension' => [], 'skin' => [] ];
+			return [ 'extensions' => [], 'skins' => [] ];
 		}
 	}
 }

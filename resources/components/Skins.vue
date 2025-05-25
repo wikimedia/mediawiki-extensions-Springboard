@@ -13,6 +13,7 @@
         @update:sort="onSort"
         :paginate="true"
 	>
+        <template #empty-state>{{ noDataMsg }}</template>
         <template #item-name="{ item }">
 			<a :href="`${item.url}`">{{ item.label }}</a>
 		</template>
@@ -174,6 +175,7 @@ module.exports = {
             searchString,
             search,
             'searchPlaceholder': mw.msg('springboard-skins-tab-search-placeholder'),
+            'noDataMsg': mw.msg('springboard-no-data-message'),
             sort,
             onSort,
             'columns': [
