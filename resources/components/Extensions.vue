@@ -14,16 +14,17 @@
     @update:sort="onSort"
     :paginate="true"
 	>
-        <template #item-name="{ item }">
-          <a :href="`${item.url}`">{{ item.label }}</a>
-        </template>
-        <template #item-action="{ item }">
-          <template v-if="!item.disabled">
-            <cdx-button v-if="item.exists" action="destructive" weight="primary" @click="submit(item)">{{ item.action }}</cdx-button>
-            <cdx-button v-else action="progressive" weight="primary" @click="submit(item)">{{ item.action }}</cdx-button>
-          </template>
-          <template v-else><p></p></template>
-		    </template>
+    <template #empty-state>{{ noDataMsg }}</template>
+    <template #item-name="{ item }">
+      <a :href="`${item.url}`">{{ item.label }}</a>
+    </template>
+    <template #item-action="{ item }">
+      <template v-if="!item.disabled">
+        <cdx-button v-if="item.exists" action="destructive" weight="primary" @click="submit(item)">{{ item.action }}</cdx-button>
+        <cdx-button v-else action="progressive" weight="primary" @click="submit(item)">{{ item.action }}</cdx-button>
+      </template>
+      <template v-else><p></p></template>
+    </template>
 	</cdx-table>
 </template>
 
@@ -174,6 +175,7 @@ module.exports = {
       searchString,
       search,
       'searchPlaceholder': mw.msg('springboard-extensions-tab-search-placeholder'), 
+      'noDataMsg': mw.msg('springboard-no-data-message'),
       sort,
       onSort,
       'columns': [
