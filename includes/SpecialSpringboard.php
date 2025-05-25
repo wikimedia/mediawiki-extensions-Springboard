@@ -24,7 +24,6 @@ class SpecialSpringboard extends SpecialPage {
 
 	public function __construct() {
 		parent::__construct( 'Springboard', 'springboard' );
-		$version = explode( '.', $this->getConfig()->get( 'Version' ) );
 	}
 
 	public function execute( $query ) {
