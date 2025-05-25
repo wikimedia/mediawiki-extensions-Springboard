@@ -7,7 +7,6 @@
     ></cdx-text-input>
     <cdx-table
         class="cdx-docs-table-with-sort"
-		caption="Your custom list of skins"
 		:columns="columns"
 		:data="data"
         v-model:sort="sort"
