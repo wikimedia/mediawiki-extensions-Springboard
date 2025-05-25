@@ -115,6 +115,10 @@ module.exports = {
                 if ( !( 'commit' in updatedMap ) ) {
                     updatedMap[ 'commit' ] = "LATEST";
                 }
+                // Hide commit hash for externally installed skins
+                if ( updatedMap[ 'disabled' ] ) {
+                    updatedMap[ 'commit' ] = "";
+                }
                 // Trim commit hash to 7 characters
                 updatedMap[ 'commit' ] = updatedMap[ 'commit' ].slice(0,7);
                 let mapCopy = {...updatedMap};
