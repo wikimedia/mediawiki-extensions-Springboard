@@ -78,7 +78,7 @@ module.exports = {
     },
 	setup() {
         const sort = ref( { name: 'asc' } );
-        let data = mw.config.get( 'WTSkins' );
+        let data = mw.config.get( 'SpringboardSkins' );
         const finalData = ref([]);
         const allData = ref([]);
         const searchString = ref('');
