@@ -18,6 +18,5 @@
     "springboard-api-error-composerfile": "Could not find the composer.json file in $1",
 	"springboard-extensions-tab-search-placeholder": "Search with extension name",
 	"springboard-skins-tab-search-placeholder": "Search with skin name",
-	"springboard-no-data-message": "There is no data available at the moment"
-
+	"springboard-no-data": "Error: No configuration found for MediaWiki version $1"
 }

@@ -75,7 +75,7 @@
 				"springboard-api-error-composerfile",
 				"springboard-extensions-tab-search-placeholder",
 				"springboard-skins-tab-search-placeholder",
-				"springboard-no-data-message"
+				"springboard-no-data"
 			]
 		},
 		"ext.SpringboardStyles": {
