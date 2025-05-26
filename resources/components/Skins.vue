@@ -189,7 +189,7 @@ module.exports = {
             searchString,
             search,
             'searchPlaceholder': mw.msg('springboard-skins-tab-search-placeholder'),
-            'noDataMsg': mw.msg('springboard-no-data-message'),
+            'noDataMsg': mw.msg('springboard-no-data', mw.config.get( 'wgVersion' )),
             sort,
             onSort,
             isFetched,
