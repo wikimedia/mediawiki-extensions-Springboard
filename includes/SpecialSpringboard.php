@@ -125,11 +125,13 @@ class SpecialSpringboard extends SpecialPage {
 			return [ 'extensions' => [], 'skins' => [] ];
 		}
 
-		if ( !preg_match( '/<syntaxhighlight\s+lang=["\']yaml["\']>(.*?)<\/syntaxhighlight>/si', $wikitext, $matches ) ) {
-			return [ 'extensions' => [], 'skins' => [] ];
+		if ( preg_match( '/<syntaxhighlight\s+lang=["\']yaml["\']>(.*?)<\/syntaxhighlight>/si', $wikitext, $matches ) ) {
+			// Decode HTML entities if syntaxhighlight is found
+			$yamlText = html_entity_decode( $matches[1], ENT_QUOTES | ENT_HTML5 );
+		} else {
+			$yamlText = trim( $wikitext );
 		}
 
-		$yamlText = html_entity_decode( $matches[1], ENT_QUOTES | ENT_HTML5 );
 		try {
 			$parsed = Yaml::parse( $yamlText );
 			return $parsed ?? [ 'extensions' => [], 'skins' => [] ];
