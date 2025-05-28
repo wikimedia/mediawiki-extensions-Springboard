@@ -108,6 +108,7 @@ module.exports = {
                 const name = Object.keys(key)[0];
                 const meta = mergedData[wikidataid] || {};
                 const updatedMap = { ...Object.values(key)[0],
+                    id: name,
                     name: {
                         label: meta.label || name,
                         url: meta.url || `https://www.mediawiki.org/wiki/Extension:${ name }`
@@ -209,7 +210,7 @@ module.exports = {
             var payload = {
                 action: 'springboard',
                 wtaction: data['action'].toLowerCase(),
-                wtname: data['name'],
+                wtname: data['id'],
                 wtrepo: data.hasOwnProperty('repository') ? data['repository'] : false,
                 wtcommit: data['commit'],
                 wtdbupdate: (data.hasOwnProperty('additional steps') && data['additional steps'].includes('database update')) ?? false,
