@@ -117,8 +117,10 @@ module.exports = {
           return updatedMap;
       } );
       data = data.map( (updatedMap) => {
-          if ( !( 'branch' in updatedMap ) ) {
-              updatedMap[ 'branch' ] = mwVersion;
+          if ('repository' in updatedMap && !('branch' in updatedMap)) {
+              updatedMap['branch'] = 'master';
+          } else if (!('branch' in updatedMap)) {
+              updatedMap['branch'] = mwVersion;
           }
           if ( !( 'commit' in updatedMap ) ) {
               updatedMap[ 'commit' ] = "LATEST";
