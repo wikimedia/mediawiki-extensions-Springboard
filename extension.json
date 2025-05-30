@@ -63,7 +63,8 @@
 				"CdxTab",
 				"CdxTabs",
 				"CdxTable",
-				"CdxProgressBar"
+				"CdxProgressBar",
+				"CdxMessage"
 			],
 			"messages": [
 				"springboard-extensions-tab-name",
