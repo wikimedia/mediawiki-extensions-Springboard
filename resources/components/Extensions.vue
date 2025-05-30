@@ -22,7 +22,7 @@
         {{ noDataMsg }}
       </template>
       <template v-else-if="searchString.trim() !== '' && data.length === 0">
-        No results found
+        {{ noSearchResultsMsg }}
       </template>
     </template>
       <template #item-name="{ item }">
@@ -224,6 +224,7 @@ module.exports = {
       search,
       'searchPlaceholder': mw.msg('springboard-extensions-tab-search-placeholder'), 
       'noDataMsg': mw.msg('springboard-no-data', mw.config.get( 'wgVersion' )),
+      'noSearchResultsMsg': mw.msg('mw-widgets-mediasearch-noresults'),
       sort,
       onSort,
       isFetched,
