@@ -22,7 +22,12 @@
         <a :href="`${item.url}`">{{ item.label }}</a>
       </template>
       <template #item-action="{ item }">
-        <template v-if="!item.disabled">
+        <template v-if="item.lacksDependency">
+          <div style="width: 200px;">
+          <cdx-message type="notice" inline>Requires {{ item.lacksDependency }} extension</cdx-message>
+          </div>
+        </template>
+        <template v-else-if="!item.disabled">
           <cdx-button v-if="item.exists" action="destructive" weight="primary" @click="submit(item)">{{ item.action }}</cdx-button>
           <cdx-button v-else action="progressive" weight="primary" @click="submit(item)">{{ item.action }}</cdx-button>
         </template>
@@ -34,7 +39,7 @@
 
 <script>
 const { ref, onMounted } = require( 'vue' );
-const { CdxTable, CdxButton, CdxTextInput, CdxProgressBar } = require( '../codex.js' );
+const { CdxTable, CdxButton, CdxTextInput, CdxProgressBar, CdxMessage } = require( '../codex.js' );
 
 const chunkArray = (array, size) => {
   const chunks = [];
@@ -79,7 +84,8 @@ module.exports = {
         CdxTable,
         CdxButton,
         CdxTextInput,
-        CdxProgressBar
+        CdxProgressBar,
+        CdxMessage
     },
 	setup() {
 		const sort = ref( { name: 'asc' } );
@@ -116,6 +122,15 @@ module.exports = {
           };
           return updatedMap;
       } );
+
+      // Helper array for checking requirements.
+      var installedExtensions = [];
+      for (let i = 0; i < data.length; i++) {
+          if (data[i].exists) {
+              installedExtensions.push(data[i].id);
+          }
+      }
+
       data = data.map( (updatedMap) => {
           if ('repository' in updatedMap && !('branch' in updatedMap)) {
               updatedMap['branch'] = 'master';
@@ -132,6 +147,16 @@ module.exports = {
           }
           // Trim commit hash to 7 characters
           updatedMap[ 'commit' ] = updatedMap[ 'commit' ].slice(0,7);
+          if ( updatedMap['required extensions'] ) {
+              for (let i = 0; i < updatedMap['required extensions'].length; i++) {
+                  if (!installedExtensions.includes(updatedMap['required extensions'][i])) {
+                      // For now, just display the first missing extension, if there's more than one.
+                      updatedMap['lacksDependency'] = updatedMap['required extensions'][i];
+                      break;
+                  }
+              }
+          }
+
           let mapCopy = {...updatedMap};
           let installActionName = "Install";
           if ( 'bundled' in updatedMap ) { 
