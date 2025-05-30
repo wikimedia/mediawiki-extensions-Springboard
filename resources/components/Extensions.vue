@@ -17,7 +17,14 @@
       @update:sort="onSort"
       :paginate="true"
     >
-      <template #empty-state>{{ noDataMsg }}</template>
+    <template #empty-state>
+      <template v-if="allData.length === 0">
+        {{ noDataMsg }}
+      </template>
+      <template v-else-if="searchString.trim() !== '' && data.length === 0">
+        No results found
+      </template>
+    </template>
       <template #item-name="{ item }">
         <a :href="`${item.url}`">{{ item.label }}</a>
       </template>
@@ -212,6 +219,7 @@ module.exports = {
     }
     return {
       'data': finalData,
+      allData,
       searchString,
       search,
       'searchPlaceholder': mw.msg('springboard-extensions-tab-search-placeholder'), 
