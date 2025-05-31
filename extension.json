@@ -76,7 +76,8 @@
 				"springboard-api-error-composerfile",
 				"springboard-extensions-tab-search-placeholder",
 				"springboard-skins-tab-search-placeholder",
-				"springboard-no-data"
+				"springboard-no-data",
+				"mw-widgets-mediasearch-noresults"
 			]
 		},
 		"ext.SpringboardStyles": {
