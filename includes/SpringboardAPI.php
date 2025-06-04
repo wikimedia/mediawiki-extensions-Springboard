@@ -26,9 +26,9 @@ class SpringboardAPI extends ApiBase {
 
 	function execute() {
 		$data = $this->extractRequestParams();
-		$type = $data[ 'wttype' ];
-		$name = $data[ 'wtname' ];
-		$action = $data[ 'wtaction' ];
+		$type = $data[ 'sbtype' ];
+		$name = $data[ 'sbname' ];
+		$action = $data[ 'sbaction' ];
 
 		$extensionRoot = dirname( __DIR__, 1 );
 
@@ -54,7 +54,7 @@ class SpringboardAPI extends ApiBase {
 			}
 			$lines[] = $line;
 
-			if ( $data[ 'wtbundled' ] == false ) {
+			if ( $data[ 'sbbundled' ] == false ) {
 				$this->download( $data );
 			}
 
@@ -71,10 +71,10 @@ class SpringboardAPI extends ApiBase {
 		file_put_contents( $this->loaderFile, "<?php\n" . implode( "\n", $lines ) . "\n" );
 
 		if ( $action == 'install' ) {
-			if ( $data[ 'wtdbupdate' ] == true ) {
+			if ( $data[ 'sbdbupdate' ] == true ) {
 				$this->dbUpdate();
 			}
-			if ( $data[ 'wtcomposer' ] == true ) {
+			if ( $data[ 'sbcomposer' ] == true ) {
 				$this->composerInstall();
 			}
 		}
@@ -97,17 +97,17 @@ class SpringboardAPI extends ApiBase {
 	 */
 	function download( $data ) {
 		$extensionRoot = dirname( __DIR__, 1 );
-		switch ( $data[ 'wttype' ] ) {
+		switch ( $data[ 'sbtype' ] ) {
 			case 'extension':
-				$repositoryLink = isset( $data['wtrepo'] ) && $data['wtrepo']
-						? $data['wtrepo']
-						: 'https://github.com/wikimedia/mediawiki-extensions-' . $data['wtname'];
+				$repositoryLink = isset( $data['sbrepo'] ) && $data['sbrepo']
+						? $data['sbrepo']
+						: 'https://github.com/wikimedia/mediawiki-extensions-' . $data['sbname'];
 				try {
-					exec( 'git clone --branch ' . $data[ 'wtbranch' ]
-						. ' ' . $repositoryLink . ' ' . $extensionRoot . '//extensions/' . $data[ 'wtname' ] );
-					if ( $data[ 'wtcommit' ] && $data[ 'wtcommit' ] !== 'HEAD' ) {
+					exec( 'git clone --branch ' . $data[ 'sbbranch' ]
+						. ' ' . $repositoryLink . ' ' . $extensionRoot . '//extensions/' . $data[ 'sbname' ] );
+					if ( $data[ 'sbcommit' ] && $data[ 'sbcommit' ] !== 'HEAD' ) {
 						exec(
-							'cd ' . $extensionRoot . '//extensions/' . ' && git checkout ' . $data[ 'wtcommit' ]
+							'cd ' . $extensionRoot . '//extensions/' . ' && git checkout ' . $data[ 'sbcommit' ]
 						);
 					}
 				} catch ( Exception $e ) {
@@ -115,14 +115,14 @@ class SpringboardAPI extends ApiBase {
 				}
 				break;
 			case 'skin':
-				$repositoryLink = isset( $data['wtrepo'] ) && $data['wtrepo']
-						? $data['wtrepo']
-						: 'https://github.com/wikimedia/mediawiki-skins-' . $data['wtname'];
-				exec( 'git clone --branch ' . $data[ 'wtbranch' ]
-					. ' ' . $repositoryLink . ' ' . $extensionRoot . '//skins/' . $data[ 'wtname' ] );
-				if ( $data[ 'wtcommit' ] && $data[ 'wtcommit' ] !== 'HEAD' ) {
+				$repositoryLink = isset( $data['sbrepo'] ) && $data['sbrepo']
+						? $data['sbrepo']
+						: 'https://github.com/wikimedia/mediawiki-skins-' . $data['sbname'];
+				exec( 'git clone --branch ' . $data[ 'sbbranch' ]
+					. ' ' . $repositoryLink . ' ' . $extensionRoot . '//skins/' . $data[ 'sbname' ] );
+				if ( $data[ 'sbcommit' ] && $data[ 'sbcommit' ] !== 'HEAD' ) {
 					exec(
-						'cd ' . $extensionRoot . '//skins/' . ' && git checkout ' . $data[ 'wtcommit' ]
+						'cd ' . $extensionRoot . '//skins/' . ' && git checkout ' . $data[ 'sbcommit' ]
 					);
 				}
 				break;
@@ -164,12 +164,12 @@ class SpringboardAPI extends ApiBase {
 	 * @return void
 	 */
 	function delete( $data ) {
-		switch ( $data[ 'wttype' ] ) {
+		switch ( $data[ 'sbtype' ] ) {
 			case 'extension':
-				exec( 'rm -rf ' . '../extensions/' . $data[ 'wtname' ] );
+				exec( 'rm -rf ' . '../extensions/' . $data[ 'sbname' ] );
 				break;
 			case 'skin':
-				exec( 'rm -rf ' . '../skins/' . $data[ 'wtname' ] );
+				exec( 'rm -rf ' . '../skins/' . $data[ 'sbname' ] );
 				break;
 			default:
 				break;
@@ -195,38 +195,38 @@ class SpringboardAPI extends ApiBase {
 	 */
 	public function getAllowedParams() {
 		return [
-			'wtaction' => [
+			'sbaction' => [
 				ParamValidator::PARAM_REQUIRED => true,
 				ParamValidator::PARAM_TYPE => 'string',
 			],
-			'wtname' => [
+			'sbname' => [
 				ParamValidator::PARAM_REQUIRED => true,
 				ParamValidator::PARAM_TYPE => 'string',
 			],
-			'wttype' => [
+			'sbtype' => [
 				ParamValidator::PARAM_REQUIRED => true,
 				ParamValidator::PARAM_TYPE => 'string',
 			],
-			'wtbundled' => [
+			'sbbundled' => [
 				ParamValidator::PARAM_REQUIRED => true,
 				ParamValidator::PARAM_TYPE => 'boolean',
 			],
-			'wtdbupdate' => [
+			'sbdbupdate' => [
 				ParamValidator::PARAM_REQUIRED => true,
 				ParamValidator::PARAM_TYPE => 'boolean',
 			],
-			'wtcomposer' => [
+			'sbcomposer' => [
 				ParamValidator::PARAM_REQUIRED => true,
 				ParamValidator::PARAM_TYPE => 'boolean',
 			],
-			'wtcommit' => [
+			'sbcommit' => [
 				ParamValidator::PARAM_TYPE => 'string',
 			],
-			'wtbranch' => [
+			'sbbranch' => [
 				ParamValidator::PARAM_REQUIRED => true,
 				ParamValidator::PARAM_TYPE => 'string',
 			],
-			'wtrepo' => [
+			'sbrepo' => [
 				ParamValidator::PARAM_REQUIRED => false,
 				ParamValidator::PARAM_TYPE => 'string',
 			]

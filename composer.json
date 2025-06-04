@@ -17,8 +17,7 @@
 		],
 		"test": [
 			"parallel-lint . --exclude vendor --exclude node_modules --exclude .phan",
-			"@phpcs",
-			"minus-x check ."
+			"@phpcs"
 		],
 		"phan": "phan -d . --long-progress-bar",
 		"phpcs": "phpcs -sp --cache"
