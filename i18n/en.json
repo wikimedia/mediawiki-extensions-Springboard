@@ -18,5 +18,17 @@
     "springboard-api-error-composerfile": "Could not find the composer.json file in $1",
 	"springboard-extensions-tab-search-placeholder": "Search with extension name",
 	"springboard-skins-tab-search-placeholder": "Search with skin name",
-	"springboard-no-data": "Error: No configuration found for MediaWiki version $1"
+	"springboard-no-data": "Error: No configuration found for MediaWiki version $1",
+	"action-springboard": "API action for Springboard operations",
+	"right-springboard": "User right for performing Springboard operations",
+	"apihelp-springboard-summary": "API action to trigger actions from Springboard",
+	"apihelp-springboard-param-sbaction": "Parameter for Springboard action",
+	"apihelp-springboard-param-sbname": "Parameter for Springboard extension or skin name",
+	"apihelp-springboard-param-sbtype": "Parameter for Springboard item type (extension or skin)",
+	"apihelp-springboard-param-sbbundled": "Parameter for checking if the item is bundled or not",
+	"apihelp-springboard-param-sbdbupdate": "Parameter for checking if database update is required",
+	"apihelp-springboard-param-sbcomposer": "Parameter for checking if composer install in required",
+	"apihelp-springboard-param-sbcommit": "Parameter for Springboard item commit hash",
+	"apihelp-springboard-param-sbbranch": "Parameter for Springboard item branch",
+	"apihelp-springboard-param-sbrepo": "Parameter for Springboard item repository URL"
 }
