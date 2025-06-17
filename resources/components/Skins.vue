@@ -98,6 +98,11 @@ module.exports = {
 	setup() {
         const sort = ref( { name: 'asc' } );
         let data = mw.config.get( 'SpringboardSkins' );
+        /* Don't display skins requiring composer dependencies since composer dependencies installation
+        requires explicit write permission from the web-server user on the future skin's directory */
+        data = data.filter( ( obj ) => {
+        return !Object.values( obj )[0]?.['additional steps']?.includes( 'composer update' )
+        } );
         const finalData = ref([]);
         const allData = ref([]);
         const searchString = ref('');
