@@ -106,7 +106,7 @@ module.exports = {
         let version = mw.config.get( 'wgVersion' ).split( '.' );
 		const mwVersion = `REL${version[0]}_${version[1]}`;
         const wikidataIds = data
-            .map(obj => Object.values(obj)[0].wikidataid)
+            .map(obj => Object.values(obj)[0]['Wikidata ID'])
             .filter(Boolean);
         onMounted(async () => {
             const chunks = chunkArray(wikidataIds, 50);
@@ -117,7 +117,7 @@ module.exports = {
                 }
             isFetched.value = true;
             data = data.map( (key) => {
-                const wikidataid = Object.values(key)[0].wikidataid;
+                const wikidataid = Object.values(key)[0]['Wikidata ID'];
                 const name = Object.keys(key)[0];
                 const meta = mergedData[wikidataid] || {};
                 const updatedMap = { ...Object.values(key)[0],
