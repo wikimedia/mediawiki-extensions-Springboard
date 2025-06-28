@@ -99,7 +99,7 @@
 		"SpringboardAlias": "Springboard.i18n.alias.php"
 	},
 	"AutoloadNamespaces": {
-		"MediaWiki\\Extension\\Springboard\\": "includes"
+		"MediaWiki\\Extension\\Springboard\\": "includes/"
 	},
 	"manifest_version": 1
 }
