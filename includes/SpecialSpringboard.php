@@ -85,7 +85,7 @@ class SpecialSpringboard extends SpecialPage {
 		$endPath = $type === 'extension' ? 'extensions' : 'skins';
 		$lines = file_exists( $this->loaderFile )
 			? array_filter( file( $this->loaderFile,
-			FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES ), fn( $l ) => trim( $l ) !== '<?php' )
+			FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES ), static fn ( $l ) => trim( $l ) !== '<?php' )
 			: [];
 
 		foreach ( $items as $i => $entry ) {

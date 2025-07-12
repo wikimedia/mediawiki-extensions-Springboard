@@ -39,7 +39,7 @@ class SpringboardAPI extends ApiBase {
 
 		$lines = file_exists( $this->loaderFile )
 			? array_filter( file( $this->loaderFile,
-			FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES ), fn( $l ) => trim( $l ) !== '<?php' )
+			FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES ), static fn ( $l ) => trim( $l ) !== '<?php' )
 			: [];
 
 		$inLoader = in_array( $line, $lines );
@@ -65,7 +65,7 @@ class SpringboardAPI extends ApiBase {
 			if ( !$inLoader ) {
 				$this->dieWithError( $this->msg( 'springboard-api-error-notinstalled', $name ) );
 			}
-			$lines = array_filter( $lines, fn( $l ) => trim( $l ) !== $line );
+			$lines = array_filter( $lines, static fn ( $l ) => trim( $l ) !== $line );
 		}
 
 		file_put_contents( $this->loaderFile, "<?php\n" . implode( "\n", $lines ) . "\n" );
