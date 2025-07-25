@@ -25,6 +25,7 @@ class SpringboardAPI extends ApiBase {
 	private $loaderFile = __DIR__ . '/CustomLoader.php';
 
 	function execute() {
+		$this->checkUserRightsAny( 'springboard' );
 		$data = $this->extractRequestParams();
 		$type = $data[ 'sbtype' ];
 		$name = $data[ 'sbname' ];
