@@ -30,5 +30,6 @@
 	"apihelp-springboard-param-sbcomposer": "Parameter for checking if composer install in required",
 	"apihelp-springboard-param-sbcommit": "Parameter for Springboard item commit hash",
 	"apihelp-springboard-param-sbbranch": "Parameter for Springboard item branch",
-	"apihelp-springboard-param-sbrepo": "Parameter for Springboard item repository URL"
+	"apihelp-springboard-param-sbrepo": "Parameter for Springboard item repository URL",
+	"springboard-api-error-invalid-param-value": "Error: Invalid value provided for the parameter $1"
 }

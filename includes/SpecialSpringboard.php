@@ -16,7 +16,6 @@ use ExtensionRegistry;
 use MediaWiki\Html\Html;
 use PermissionsError;
 use SpecialPage;
-use Symfony\Component\Yaml\Yaml;
 
 class SpecialSpringboard extends SpecialPage {
 
@@ -35,7 +34,8 @@ class SpecialSpringboard extends SpecialPage {
 
 		$out = $this->getOutput();
 
-		$recs = $this->fetchRecommendedPage();
+		$configURL = $this->getConfig()->get( 'SpringboardURL' );
+		$recs = SpringboardUtils::fetchRecommendedPage( $configURL );
 
 		if ( isset( $recs['extensions'] ) ) {
 			$recs['extensions'] = $this->addFlagsToItems( $recs['extensions'], 'extension' );
@@ -101,42 +101,5 @@ class SpecialSpringboard extends SpecialPage {
 			}
 		}
 		return $items;
-	}
-
-	/**
-	 * Fetch and parse YAML block.
-	 *
-	 * @return array
-	 */
-	private function fetchRecommendedPage() {
-		$configURL = $this->getConfig()->get( 'SpringboardURL' );
-		if ( is_array( $configURL ) ) {
-			$wikitext = false;
-			// Get e.g. "1.23" from "1.23.4-alpha"
-			preg_match( "/^\d\.\d+/", MW_VERSION, $match );
-			$currentVersion = $match[0];
-			if ( array_key_exists( $currentVersion, $configURL ) ) {
-				$wikitext = file_get_contents( $configURL[$currentVersion] );
-			}
-		} else {
-			$wikitext = file_get_contents( $configURL );
-		}
-		if ( $wikitext === false ) {
-			return [ 'extensions' => [], 'skins' => [] ];
-		}
-
-		if ( preg_match( '/<syntaxhighlight\s+lang=["\']yaml["\']>(.*?)<\/syntaxhighlight>/si', $wikitext, $matches ) ) {
-			// Decode HTML entities if syntaxhighlight is found
-			$yamlText = html_entity_decode( $matches[1], ENT_QUOTES | ENT_HTML5 );
-		} else {
-			$yamlText = trim( $wikitext );
-		}
-
-		try {
-			$parsed = Yaml::parse( $yamlText );
-			return $parsed ?? [ 'extensions' => [], 'skins' => [] ];
-		} catch ( \Symfony\Component\Yaml\Exception\ParseException $e ) {
-			return [ 'extensions' => [], 'skins' => [] ];
-		}
 	}
 }

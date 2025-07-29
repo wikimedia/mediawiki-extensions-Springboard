@@ -24,12 +24,52 @@ class SpringboardAPI extends ApiBase {
 
 	private $loaderFile = __DIR__ . '/CustomLoader.php';
 
+	function validateRequestParams( $requestParams, $recs ) {
+		$extensions = SpringboardUtils::extractNames( $recs[ 'extensions' ] );
+		$skins = SpringboardUtils::extractNames( $recs[ 'skins' ] );
+
+		$acceptedValuesMap = [
+			'sbtype' => [ 'extension', 'skin' ],
+			'sbaction' => [ 'install', 'uninstall' ],
+			'sbname' => [
+				'extension' => $extensions,
+				'skin' => $skins
+			]
+		];
+		foreach ( $acceptedValuesMap as $param => $acceptedValues ) {
+			$value = $requestParams[$param];
+			if ( $param == 'sbname' ) {
+				$acceptedValues = $acceptedValues[$requestParams['sbtype']];
+			}
+			if ( !in_array( $value, $acceptedValues ) ) {
+				$this->dieWithError( $this->msg( 'springboard-api-error-invalid-param-value', $param ) );
+			}
+		}
+	}
+
 	function execute() {
 		$this->checkUserRightsAny( 'springboard' );
-		$data = $this->extractRequestParams();
-		$type = $data[ 'sbtype' ];
-		$name = $data[ 'sbname' ];
-		$action = $data[ 'sbaction' ];
+		$configURL = $this->getConfig()->get( 'SpringboardURL' );
+		$recs = SpringboardUtils::fetchRecommendedPage( $configURL );
+		$requestParams = $this->extractRequestParams();
+		$this->validateRequestParams( $requestParams, $recs );
+		$version = explode( '.', MW_VERSION );
+		$mwVersion = "REL{$version[0]}_{$version[1]}";
+		$type = $requestParams[ 'sbtype' ];
+		$name = $requestParams[ 'sbname' ];
+		$action = $requestParams[ 'sbaction' ];
+		$configData = null;
+		foreach ( $recs[ $type == 'skin' ? 'skins' : 'extensions'] as $data ) {
+			if ( isset( $data[$name] ) ) {
+				$configData = $data[$name];
+			}
+		}
+		$requestParams[ 'sbrepo' ] = isset( $configData['repository'] ) ? $configData['repository'] : false;
+		$requestParams[ 'sbbranch' ] = isset( $configData[ 'branch' ] ) ? $configData['branch'] : ( isset( $configData['repository'] ) ? 'master' : $mwVersion );
+		$requestParams[ 'sbcommit' ] = isset( $configData['commit'] ) ? $configData['commit'] : 'LATEST';
+		$requestParams[ 'sbbundled' ] = isset( $configData['bundled'] ) ? $configData['bundled'] : false;
+		$requestParams[ 'sbdbupdate' ] = isset( $configData['additional steps'] ) && in_array( 'database update', $configData['additional steps'] ) ?? false;
+		$requestParams[ 'sbcomposer' ] = isset( $configData['additional steps'] ) && in_array( 'composer update', $configData['additional steps'] ) ?? false;
 
 		$extensionRoot = dirname( __DIR__, 1 );
 
@@ -55,8 +95,8 @@ class SpringboardAPI extends ApiBase {
 			}
 			$lines[] = $line;
 
-			if ( $data[ 'sbbundled' ] == false ) {
-				$this->download( $data );
+			if ( $requestParams[ 'sbbundled' ] == false ) {
+				$this->download( $requestParams );
 			}
 
 		} else {
@@ -72,10 +112,10 @@ class SpringboardAPI extends ApiBase {
 		file_put_contents( $this->loaderFile, "<?php\n" . implode( "\n", $lines ) . "\n" );
 
 		if ( $action == 'install' ) {
-			if ( $data[ 'sbdbupdate' ] == true ) {
+			if ( $requestParams[ 'sbdbupdate' ] == true ) {
 				$this->dbUpdate();
 			}
-			if ( $data[ 'sbcomposer' ] == true ) {
+			if ( $requestParams[ 'sbcomposer' ] == true ) {
 				$this->composerInstall();
 			}
 		}
@@ -198,7 +238,8 @@ class SpringboardAPI extends ApiBase {
 		return [
 			'sbaction' => [
 				ParamValidator::PARAM_REQUIRED => true,
-				ParamValidator::PARAM_TYPE => 'string',
+				ParamValidator::PARAM_TYPE => [ 'install', 'uninstall' ],
+				ParamValidator::PARAM_ISMULTI => false,
 			],
 			'sbname' => [
 				ParamValidator::PARAM_REQUIRED => true,
@@ -206,31 +247,9 @@ class SpringboardAPI extends ApiBase {
 			],
 			'sbtype' => [
 				ParamValidator::PARAM_REQUIRED => true,
-				ParamValidator::PARAM_TYPE => 'string',
+				ParamValidator::PARAM_TYPE => [ 'extension', 'skin' ],
+				ParamValidator::PARAM_ISMULTI => false,
 			],
-			'sbbundled' => [
-				ParamValidator::PARAM_REQUIRED => true,
-				ParamValidator::PARAM_TYPE => 'boolean',
-			],
-			'sbdbupdate' => [
-				ParamValidator::PARAM_REQUIRED => true,
-				ParamValidator::PARAM_TYPE => 'boolean',
-			],
-			'sbcomposer' => [
-				ParamValidator::PARAM_REQUIRED => true,
-				ParamValidator::PARAM_TYPE => 'boolean',
-			],
-			'sbcommit' => [
-				ParamValidator::PARAM_TYPE => 'string',
-			],
-			'sbbranch' => [
-				ParamValidator::PARAM_REQUIRED => true,
-				ParamValidator::PARAM_TYPE => 'string',
-			],
-			'sbrepo' => [
-				ParamValidator::PARAM_REQUIRED => false,
-				ParamValidator::PARAM_TYPE => 'string',
-			]
 		];
 	}
 }

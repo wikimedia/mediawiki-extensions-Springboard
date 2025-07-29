@@ -267,13 +267,7 @@ module.exports = {
                 action: 'springboard',
                 sbaction: action,
                 sbname: itemData['id'],
-                sbrepo: itemData.hasOwnProperty('repository') ? itemData['repository'] : false,
-                sbcommit: itemData['commit'],
-                sbdbupdate: (itemData.hasOwnProperty('additional steps') && itemData['additional steps'].includes('database update')) ?? false,
-                sbcomposer: (itemData.hasOwnProperty('additional steps') && itemData['additional steps'].includes('composer update')) ?? false,
-                sbbranch: itemData['branch'],
                 sbtype: 'extension',
-                sbbundled: itemData.hasOwnProperty('repository') ? itemData['bundled'] : false
             };
             api.postWithToken( 'csrf', payload ).then( (res) => {
               mw.notify( res.springboard.result );

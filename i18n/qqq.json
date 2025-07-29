@@ -13,7 +13,7 @@
 	"springboard-skins-tab-name": "Tab label for skins",
     "springboard-api-error-loadedelsewhere": "API error message thrown when the extension or skin is loaded in LocalSettings.php. Parameters:\n* $1 - name of the extension / skin",
 	"springboard-api-error-alreadyinstalled": "API error message thrown when the extension or skin is already installed. Parameters:\n* $1 - name of the extension / skin",
-	"springboard-api-error-notinstalled": "API error message thrown when the extension or skin is not installed. PParameters:\n* $1 - name of the extension / skin",
+	"springboard-api-error-notinstalled": "API error message thrown when the extension or skin is not installed. Parameters:\n* $1 - name of the extension / skin",
     "springboard-api-error-invalidtype": "API error message thrown when the given type is invalid. Available types => [extension, skin]",
     "springboard-api-error-composerfile": "API error message thrown when it could not find the composer.json file. Paramerters:\n* $1 - name of the extension",
 	"springboard-extensions-tab-search-placeholder": "Placeholder text for the search box to filter extensions",
@@ -30,5 +30,6 @@
 	"apihelp-springboard-param-sbcomposer": "Parameter for checking if composer install in required",
 	"apihelp-springboard-param-sbcommit": "Parameter for Springboard item commit hash",
 	"apihelp-springboard-param-sbbranch": "Parameter for Springboard item branch",
-	"apihelp-springboard-param-sbrepo": "Parameter for Springboard item repository URL"
+	"apihelp-springboard-param-sbrepo": "Parameter for Springboard item repository URL",
+	"springboard-api-error-invalid-param-value": "API error message thrown when the provided value for an API parameter is invalid. Parameters:\n* $1 - name of the parameter"
 }
