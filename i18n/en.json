@@ -24,12 +24,5 @@
 	"apihelp-springboard-summary": "API action to trigger actions from Springboard",
 	"apihelp-springboard-param-sbaction": "Parameter for Springboard action",
 	"apihelp-springboard-param-sbname": "Parameter for Springboard extension or skin name",
-	"apihelp-springboard-param-sbtype": "Parameter for Springboard item type (extension or skin)",
-	"apihelp-springboard-param-sbbundled": "Parameter for checking if the item is bundled or not",
-	"apihelp-springboard-param-sbdbupdate": "Parameter for checking if database update is required",
-	"apihelp-springboard-param-sbcomposer": "Parameter for checking if composer install in required",
-	"apihelp-springboard-param-sbcommit": "Parameter for Springboard item commit hash",
-	"apihelp-springboard-param-sbbranch": "Parameter for Springboard item branch",
-	"apihelp-springboard-param-sbrepo": "Parameter for Springboard item repository URL",
-	"springboard-api-error-invalid-param-value": "Error: Invalid value provided for the parameter $1"
+	"apihelp-springboard-param-sbtype": "Parameter for Springboard item type (extension or skin)"
 }

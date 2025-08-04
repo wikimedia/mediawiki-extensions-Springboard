@@ -42,7 +42,7 @@ class SpringboardAPI extends ApiBase {
 				$acceptedValues = $acceptedValues[$requestParams['sbtype']];
 			}
 			if ( !in_array( $value, $acceptedValues ) ) {
-				$this->dieWithError( $this->msg( 'springboard-api-error-invalid-param-value', $param ) );
+				$this->dieWithError( $this->msg( 'apierror-unrecognizedvalue', $param, $value ) );
 			}
 		}
 	}
@@ -76,7 +76,11 @@ class SpringboardAPI extends ApiBase {
 		$registry = ExtensionRegistry::getInstance();
 		$func = $type === 'extension' ? 'wfLoadExtension' : 'wfLoadSkin';
 		$endPath = $type === 'extension' ? 'extensions' : 'skins';
-		$line = "$func( '$name', '$extensionRoot/$endPath/$name/$type.json' );";
+		$resPath = "'$name'";
+		if ( !$requestParams['sbbundled'] ) {
+			$resPath .= ", '$extensionRoot/$endPath/$name/$type.json'";
+		}
+		$line = "$func( $resPath );";
 
 		$lines = file_exists( $this->loaderFile )
 			? array_filter( file( $this->loaderFile,

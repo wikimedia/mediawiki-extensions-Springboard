@@ -172,12 +172,12 @@ module.exports = {
 
                 let mapCopy = {...updatedMap};
                 let installActionName = "Install";
-                if ( 'bundled' in updatedMap ) { 
+                if ( 'bundled' in updatedMap ) {
                     installActionName = 'Enable';
                 }
                 updatedMap['action'] = updatedMap['exists']
-                    ? { ...mapCopy, action: 'Disable', disabled: updatedMap['disabled'] }
-                    : { ...mapCopy, action: installActionName, disabled: updatedMap['disabled'] }
+                    ? { ...mapCopy, action: 'Uninstall', disabled: updatedMap['disabled'] }
+                    : { ...mapCopy, action: installActionName, disabled: updatedMap['disabled'] };
                 return updatedMap;
             });
             finalData.value = data;
@@ -258,9 +258,13 @@ module.exports = {
     methods: {
         submit ( itemData ) {
             var api = new mw.Api();
+            var action = itemData['action'].toLowerCase();
+            if ( action == 'enable' ) {
+                action = 'install';
+            }
             var payload = {
                 action: 'springboard',
-                sbaction: itemData['action'].toLowerCase(),
+                sbaction: action,
                 sbname: itemData['id'],
                 sbtype: 'skin',
             };
@@ -269,7 +273,10 @@ module.exports = {
               if (res.springboard.result === 'success') {
                   const updatedItem = { ...itemData };
                   updatedItem.exists = !itemData.exists;
-                  updatedItem.action = updatedItem.exists ? 'Disable' : (updatedItem.bundled ? 'Enable' : 'Install');
+                  const wasEnable = itemData.action === 'Enable';
+                  updatedItem.action = updatedItem.exists
+                      ? (wasEnable ? 'Disable' : 'Uninstall')
+                      : (updatedItem.bundled ? 'Enable' : 'Install');
 
                   this.updateData(updatedItem);
                 }
