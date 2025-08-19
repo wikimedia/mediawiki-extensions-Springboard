@@ -32,7 +32,7 @@
 	},
 	"config": {
 		"SpringboardURL": {
-			"1.43": "https://www.mediawiki.org/wiki/Recommended_Revisions/1.43?oldid=7811879&action=raw"
+			"1.43": "https://raw.githubusercontent.com/CanastaWiki/RecommendedRevisions/18bdb18e0504ef9442e1bd0484497b34634b5515/1.43.yaml"
 		}
 	},
 	"SpecialPages": {
