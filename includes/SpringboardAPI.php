@@ -30,7 +30,7 @@ class SpringboardAPI extends ApiBase {
 
 		$acceptedValuesMap = [
 			'sbtype' => [ 'extension', 'skin' ],
-			'sbaction' => [ 'install', 'uninstall' ],
+			'sbaction' => [ 'install', 'enable', 'disable' ],
 			'sbname' => [
 				'extension' => $extensions,
 				'skin' => $skins
@@ -74,46 +74,44 @@ class SpringboardAPI extends ApiBase {
 		$extensionRoot = dirname( __DIR__, 1 );
 
 		$registry = ExtensionRegistry::getInstance();
-		$func = $type === 'extension' ? 'wfLoadExtension' : 'wfLoadSkin';
-		$endPath = $type === 'extension' ? 'extensions' : 'skins';
-		$resPath = "'$name'";
-		if ( !$requestParams['sbbundled'] ) {
-			$resPath .= ", '$extensionRoot/$endPath/$name/$type.json'";
-		}
-		$line = "$func( $resPath );";
-
-		$lines = file_exists( $this->loaderFile )
-			? array_filter( file( $this->loaderFile,
-			FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES ), static fn ( $l ) => trim( $l ) !== '<?php' )
+		$loadFunction = $type === 'extension' ? 'wfLoadExtension' : 'wfLoadSkin';
+		$componentDir = $type === 'extension' ? 'extensions' : 'skins';
+		$loaderFileLines = file_exists( $this->loaderFile )
+			? array_filter(
+				file( $this->loaderFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES ),
+				static fn ( $line ) => trim( $line ) !== '<?php'
+			)
 			: [];
 
-		$inLoader = in_array( $line, $lines );
+		$loaderLine = "$loadFunction( '$name', '$extensionRoot/$componentDir/$name/$type.json' );";
+		// Check if extension/skin is loaded in loader file
+		$isInLoaderFile = in_array( $loaderLine, $loaderFileLines );
 		$isLoaded = $registry->isLoaded( $name );
+		// Check if extension/skin exists
+		$isInstalled = is_file( "$extensionRoot/$componentDir/$name/$type.json" );
 
-		if ( $action === 'install' ) {
-			if ( $isLoaded && !$inLoader ) {
+		if ( $action !== 'disable' ) {
+			if ( $isLoaded && !$isInLoaderFile ) {
 				$this->dieWithError( $this->msg( 'springboard-api-error-loadedelsewhere', $name ) );
 			}
-			if ( $inLoader ) {
-				$this->dieWithError( $this->msg( 'springboard-api-error-alreadyinstalled', $name ) );
-			}
-			$lines[] = $line;
-
-			if ( $requestParams[ 'sbbundled' ] == false ) {
+			if ( $action === 'install' ) {
+				if ( $isInstalled ) {
+					$this->dieWithError( $this->msg( 'springboard-api-error-alreadyinstalled', $name ) );
+				}
 				$this->download( $requestParams );
 			}
-
+			$loaderFileLines[] = $loaderLine;
 		} else {
-			if ( $isLoaded && !$inLoader ) {
+			if ( $isLoaded && !$isInLoaderFile ) {
 				$this->dieWithError( $this->msg( 'springboard-api-error-loadedelsewhere', $name ) );
 			}
-			if ( !$inLoader ) {
+			if ( !$isInstalled ) {
 				$this->dieWithError( $this->msg( 'springboard-api-error-notinstalled', $name ) );
 			}
-			$lines = array_filter( $lines, static fn ( $l ) => trim( $l ) !== $line );
+			$loaderFileLines = array_filter( $loaderFileLines, static fn ( $l ) => trim( $l ) !== $loaderLine );
 		}
 
-		file_put_contents( $this->loaderFile, "<?php\n" . implode( "\n", $lines ) . "\n" );
+		file_put_contents( $this->loaderFile, "<?php\n" . implode( "\n", $loaderFileLines ) . "\n" );
 
 		if ( $action == 'install' ) {
 			if ( $requestParams[ 'sbdbupdate' ] == true ) {
@@ -242,7 +240,7 @@ class SpringboardAPI extends ApiBase {
 		return [
 			'sbaction' => [
 				ParamValidator::PARAM_REQUIRED => true,
-				ParamValidator::PARAM_TYPE => [ 'install', 'uninstall' ],
+				ParamValidator::PARAM_TYPE => [ 'install', 'enable', 'disable' ],
 				ParamValidator::PARAM_ISMULTI => false,
 			],
 			'sbname' => [

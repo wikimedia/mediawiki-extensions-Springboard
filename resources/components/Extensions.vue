@@ -35,7 +35,7 @@
           </div>
         </template>
         <template v-else-if="!item.disabled">
-          <cdx-button v-if="item.exists" action="destructive" weight="primary" @click="submit(item)">{{ item.action }}</cdx-button>
+          <cdx-button v-if="item.enabled" action="destructive" weight="primary" @click="submit(item)">{{ item.action }}</cdx-button>
           <cdx-button v-else action="progressive" weight="primary" @click="submit(item)">{{ item.action }}</cdx-button>
         </template>
         <template v-else><p></p></template>
@@ -138,7 +138,7 @@ module.exports = {
       // Helper array for checking requirements.
       var installedExtensions = [];
       for (let i = 0; i < data.length; i++) {
-          if (data[i].exists) {
+          if (data[i].installed) {
               installedExtensions.push(data[i].id);
           }
       }
@@ -169,14 +169,11 @@ module.exports = {
               }
           }
 
-          let mapCopy = {...updatedMap};
-          let installActionName = "Install";
-          if ( 'bundled' in updatedMap ) {
-              installActionName = 'Enable';
-          }
-          updatedMap['action'] = updatedMap['exists']
-              ? { ...mapCopy, action: 'Uninstall', disabled: updatedMap['disabled'] }
-              : { ...mapCopy, action: installActionName, disabled: updatedMap['disabled'] };
+          let mapCopy = { ...updatedMap };
+          updatedMap['action'] = updatedMap['enabled']
+              ? { ...mapCopy, action: 'Disable', disabled: updatedMap['disabled'] }
+              : (updatedMap['installed'] ? { ...mapCopy, action: 'Enable', disabled: updatedMap['disabled'] }
+              : { ...mapCopy, action: 'Install', disabled: updatedMap['disabled'] });
           return updatedMap;
       } );
       finalData.value = data;
@@ -257,13 +254,9 @@ module.exports = {
     methods: {
         submit ( itemData ) {
             var api = new mw.Api();
-            var action = itemData['action'].toLowerCase();
-            if ( action == 'enable' ) {
-                action = 'install';
-            }
             var payload = {
                 action: 'springboard',
-                sbaction: action,
+                sbaction: itemData['action'].toLowerCase(),
                 sbname: itemData['id'],
                 sbtype: 'extension',
             };
@@ -271,11 +264,8 @@ module.exports = {
               mw.notify( res.springboard.result );
               if (res.springboard.result === 'success') {
                   const updatedItem = { ...itemData };
-                  updatedItem.exists = !itemData.exists;
-                  const wasEnable = itemData.action === 'Enable';
-                  updatedItem.action = updatedItem.exists
-                      ? (wasEnable ? 'Disable' : 'Uninstall')
-                      : (updatedItem.bundled ? 'Enable' : 'Install');
+                  updatedItem.enabled = !itemData.enabled;
+                  updatedItem.action = updatedItem.enabled ? 'Disable' : 'Enable';
 
                   this.updateData(updatedItem);
                 }

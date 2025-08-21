@@ -71,7 +71,12 @@ class SpecialSpringboard extends SpecialPage {
 	}
 
 	/**
-	 * Add exists flag for installed items and disabled flag for items installed without Springboard
+	 * Add metadata flags to each extension/skin item.
+	 *
+	 * Flags include:
+	 * - installed: whether the extension/skin is installed
+	 * - enabled: whether it is currently loaded
+	 * - disabled: whether it is installed but not included in Springboard loader
 	 *
 	 * @param array $items
 	 * @param string $type
@@ -79,27 +84,39 @@ class SpecialSpringboard extends SpecialPage {
 	 * @return array
 	 */
 	private function addFlagsToItems( $items, $type ) {
-		$loadedList = ExtensionRegistry::getInstance()->getAllThings();
+		// Get the full list of currently loaded extensions/skins
+		$loadedComponents = ExtensionRegistry::getInstance()->getAllThings();
 		$extensionRoot = dirname( __DIR__, 1 );
-		$func = $type === 'extension' ? 'wfLoadExtension' : 'wfLoadSkin';
-		$endPath = $type === 'extension' ? 'extensions' : 'skins';
-		$lines = file_exists( $this->loaderFile )
-			? array_filter( file( $this->loaderFile,
-			FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES ), static fn ( $l ) => trim( $l ) !== '<?php' )
+		$loadFunction = $type === 'extension' ? 'wfLoadExtension' : 'wfLoadSkin';
+		$componentDir = $type === 'extension' ? 'extensions' : 'skins';
+		$loaderFileLines = file_exists( $this->loaderFile )
+			? array_filter(
+				file( $this->loaderFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES ),
+				static fn ( $line ) => trim( $line ) !== '<?php'
+			)
 			: [];
 
-		foreach ( $items as $i => $entry ) {
+		foreach ( $items as $index => $entry ) {
 			foreach ( $entry as $name => $metadata ) {
-				$line = "$func( '$name', '$extensionRoot/$endPath/$name/$type.json' );";
-				$inLoader = in_array( $line, $lines );
-				$isInstalled = $this->isPresent( $name, $loadedList );
-				$metadata['exists'] = $isInstalled;
-				if ( $isInstalled && !$inLoader ) {
+				// The expected line in loader file
+				$expectedLoaderLine = "$loadFunction( '$name', '$extensionRoot/$componentDir/$name/$type.json' );";
+				// Check if extension/skin is loaded in loader file
+				$isInLoaderFile = in_array( $expectedLoaderLine, $loaderFileLines );
+				// Check if extension/skin exists
+				$isInstalled = is_file( "$extensionRoot/$componentDir/$name/$type.json" );
+				$metadata['installed'] = $isInstalled;
+				// Check if extension/skin is currently loaded
+				$isLoaded = $this->isPresent( $name, $loadedComponents );
+				$metadata['enabled'] = $isLoaded;
+				// Mark disabled if not loaded via Springboard
+				if ( $isLoaded && !$isInLoaderFile ) {
 					$metadata['disabled'] = true;
 				}
-				$items[$i] = [ $name => $metadata ];
+				$items[$index] = [ $name => $metadata ];
 			}
 		}
+
 		return $items;
 	}
+
 }
