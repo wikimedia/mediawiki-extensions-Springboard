@@ -49,7 +49,8 @@
 		"ext.Springboard": {
 			"class": "MediaWiki\\ResourceLoader\\CodexModule",
 			"dependencies": [
-				"vue"
+				"vue",
+				"ext.SpringboardStyles"
 			],
 			"packageFiles": [
 				"init.js",

@@ -37,6 +37,7 @@
         <template v-else-if="!item.disabled">
           <cdx-button v-if="item.enabled" action="destructive" weight="primary" @click="submit(item)">{{ item.action }}</cdx-button>
           <cdx-button v-else action="progressive" weight="primary" @click="submit(item)">{{ item.action }}</cdx-button>
+          <div v-if="loadingRow === item.id" class="spinner"></div>
         </template>
         <template v-else><p></p></template>
       </template>
@@ -106,6 +107,7 @@ module.exports = {
     const allData = ref([]);
     const searchString = ref('');
     const isFetched = ref(false);
+    const loadingRow = ref(null);
     const userLang = mw.config.get( 'wgUserLanguage' );
     let version = mw.config.get( 'wgVersion' ).split( '.' );
     const mwVersion = `REL${version[0]}_${version[1]}`;
@@ -242,6 +244,7 @@ module.exports = {
       onSort,
       updateData,
       isFetched,
+      loadingRow,
       'columns': [
         {id: 'name', label: 'Extension Name', allowSort: true},
         {id: 'desc', label: 'Description'},
@@ -253,6 +256,7 @@ module.exports = {
 	},
     methods: {
         submit ( itemData ) {
+            this.loadingRow = itemData.id;
             var api = new mw.Api();
             var payload = {
                 action: 'springboard',
@@ -261,6 +265,7 @@ module.exports = {
                 sbtype: 'extension',
             };
             api.postWithToken( 'csrf', payload ).then( (res) => {
+              this.loadingRow = null;
               mw.notify( res.springboard.result );
               if (res.springboard.result === 'success') {
                   const updatedItem = { ...itemData };
