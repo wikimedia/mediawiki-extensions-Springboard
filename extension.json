@@ -1,11 +1,11 @@
 {
 	"name": "Springboard",
-	"version": "0.1",
+	"version": "1.0",
 	"author": [
 		"Jayanth Vikash Saminathan",
 		"Naresh Kumar Babu",
 		"Sanjay Thiyagarajan",
-        "Yaron Koren"
+		"Yaron Koren"
 	],
 	"url": "https://www.mediawiki.org/wiki/Extension:Springboard",
 	"descriptionmsg": "springboard-desc",

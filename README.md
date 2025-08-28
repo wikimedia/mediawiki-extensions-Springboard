@@ -6,7 +6,7 @@ For more information, see the online documentation at:
 https://www.mediawiki.org/wiki/Extension:Springboard
 
 ## Version
-Springboard is currently at version 0.1. It works with MediaWiki version 1.41 and higher.
+Springboard is currently at version 1.0. It works with MediaWiki version 1.41 and higher.
 
 ## Installing
 Download the extension and place it in the `extensions/` directory in a folder named `Springboard`.
@@ -35,10 +35,9 @@ You can configure Springboard to load extension lists from a custom URL by addin
 `$wgSpringboardURL = "https://your-custom-list-url";`
 
 By default, it uses:
-https://www.mediawiki.org/wiki/Recommended_revisions/1.43  
+https://github.com/CanastaWiki/RecommendedRevisions/blob/main/1.43.yaml
 
-  
-## User Rights  
+## User Rights
 
 Springboard access is controlled by the `springboard` user right. By default, only users in the `sysop` group can use the Springboard interface:
 `$wgGroupPermissions['sysop']['springboard'] = true;`
