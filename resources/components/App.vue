@@ -8,7 +8,7 @@
 				:name="tab.name"
 				:label="tab.label"
 			>
-				<component :is="tab.component"></component>
+				<ext-skins :type="tab.name"></ext-skins>
 			</cdx-tab>
 		</cdx-tabs>
 	</div>
@@ -17,15 +17,15 @@
 <script>
 const { ref } = require( 'vue' );
 const { CdxTabs, CdxTab } = require( '../codex.js' );
-const Extensions = require( './Extensions.vue' );
-const Skins = require( './Skins.vue' );
+const ExtSkins = require( './ExtSkins.vue' );
 
 // @vue/component
 module.exports = {
 	name: 'App',
 	components: {
 		CdxTabs,
-		CdxTab
+		CdxTab,
+		ExtSkins
 	},
 	setup() {
 		const currentTab = ref('extensions');
@@ -33,13 +33,11 @@ module.exports = {
 			{
 				name: 'extensions',
 				label: mw.msg( 'springboard-extensions-tab-name' ),
-				component: Extensions,
                 active: true
 			},
 			{
 				name: 'skins',
-				label: mw.msg( 'springboard-skins-tab-name' ),
-				component: Skins
+				label: mw.msg( 'springboard-skins-tab-name' )
 			}
 		];
 

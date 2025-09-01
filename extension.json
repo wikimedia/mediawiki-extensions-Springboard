@@ -55,8 +55,7 @@
 			"packageFiles": [
 				"init.js",
 				"components/App.vue",
-				"components/Extensions.vue",
-				"components/Skins.vue"
+				"components/ExtSkins.vue"
 			],
 			"codexComponents": [
 				"CdxButton",
