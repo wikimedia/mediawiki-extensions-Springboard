@@ -35,8 +35,8 @@
                     </div>
                 </template>
                 <template v-else-if="!item.disabled">
-                    <cdx-button v-if="item.enabled" action="destructive" weight="primary" @click="submit(item, this.type)">{{ item.action }}</cdx-button>
-                    <cdx-button v-else action="progressive" weight="primary" @click="submit(item, this.type)">{{ item.action }}</cdx-button>
+                    <cdx-button v-if="item.enabled" action="destructive" weight="primary" @click="submit(item, this.props)">{{ item.action }}</cdx-button>
+                    <cdx-button v-else action="progressive" weight="primary" @click="submit(item, this.props)">{{ item.action }}</cdx-button>
                     <div v-if="loadingRow === item.id" class="spinner"></div>
                 </template>
                 <template v-else><p></p></template>
@@ -95,10 +95,12 @@ module.exports = {
         CdxProgressBar,
         CdxMessage
     },
-	type: { type: String, required: true }, // "extensions" | "skins"
-	setup(type) {
+    props: {
+        type: { type: String, required: true }, // "extensions" | "skins"
+    },
+    setup(props) {
         const sort = ref( { name: 'asc' } );
-        let data = type === 'extensions' ? mw.config.get( 'SpringboardExtensions' ) : mw.config.get( 'SpringboardSkins' );
+        let data = props.type === 'extensions' ? mw.config.get( 'SpringboardExtensions' ) : mw.config.get( 'SpringboardSkins' );
         /* Don't display extensions/skins requiring composer dependencies since composer dependencies installation
         requires explicit write permission from the web-server user on the future skin's directory */
         data = data.filter( ( obj ) => {
@@ -238,7 +240,7 @@ module.exports = {
             allData,
             searchString,
             search,
-            'searchPlaceholder': type === 'extensions' ? mw.msg('springboard-extensions-tab-search-placeholder') 
+            'searchPlaceholder': props.type === 'extensions' ? mw.msg('springboard-extensions-tab-search-placeholder') 
                 : mw.msg('springboard-skins-tab-search-placeholder'),
             'noDataMsg': mw.msg('springboard-no-data', mw.config.get( 'wgVersion' )),
             'noSearchResultsMsg': mw.msg('mw-widgets-mediasearch-noresults'),
@@ -247,9 +249,9 @@ module.exports = {
             updateData,
             isFetched,
             loadingRow,
-            type,
+            props,
             'columns': [
-                {id: 'name', label: (type === 'extensions' ? 'Extension' : 'Skin') +' Name', allowSort: true},
+                {id: 'name', label: (props.type === 'extensions' ? 'Extension' : 'Skin') +' Name', allowSort: true},
                 {id: 'desc', label: 'Description'},
                 {id: 'commit', label: 'Commit'},
                 {id: 'branch', label: 'Branch', allowSort: true},
@@ -258,14 +260,14 @@ module.exports = {
         };
 	},
     methods: {
-       submit ( itemData, type) {
+       submit ( itemData, props) {
             this.loadingRow = itemData.id;
             var api = new mw.Api();
             var payload = {
                 action: 'springboard',
                 sbaction: itemData['action'].toLowerCase(),
                 sbname: itemData['id'],
-                sbtype: type === 'extensions' ? 'extension' : 'skin',
+                sbtype: props.type === 'extensions' ? 'extension' : 'skin',
             };
             api.postWithToken( 'csrf', payload ).then( (res) => {
             this.loadingRow = null;
