@@ -6,7 +6,7 @@ For more information, see the online documentation at:
 https://www.mediawiki.org/wiki/Extension:Springboard
 
 ## Version
-Springboard is currently at version 1.0. It works with MediaWiki version 1.41 and higher.
+Springboard is currently at version 1.0.1. It works with MediaWiki version 1.41 and higher.
 
 ## Installing
 Download the extension and place it in the `extensions/` directory in a folder named `Springboard`.
