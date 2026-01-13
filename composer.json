@@ -23,9 +23,6 @@
 		"phan": "phan -d . --long-progress-bar",
 		"phpcs": "phpcs -sp --cache"
 	},
-	"require": {
-		"symfony/yaml": "^6.4"
-	},
 	"config": {
 		"allow-plugins": {
 			"dealerdirect/phpcodesniffer-composer-installer": true
