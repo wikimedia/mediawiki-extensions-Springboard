@@ -37,7 +37,7 @@ class SpringboardUtils {
 		try {
 			$parsed = Yaml::parse( $yamlText );
 			return $parsed ?? [ 'extensions' => [], 'skins' => [] ];
-		} catch ( \Symfony\Component\Yaml\Exception\ParseException $e ) {
+		} catch ( \Symfony\Component\Yaml\Exception\ParseException ) {
 			return [ 'extensions' => [], 'skins' => [] ];
 		}
 	}

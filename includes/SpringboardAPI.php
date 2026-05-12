@@ -64,12 +64,12 @@ class SpringboardAPI extends ApiBase {
 				$configData = $data[$name];
 			}
 		}
-		$requestParams[ 'sbrepo' ] = isset( $configData['repository'] ) ? $configData['repository'] : false;
-		$requestParams[ 'sbbranch' ] = isset( $configData[ 'branch' ] ) ? $configData['branch'] : ( isset( $configData['repository'] ) ? 'master' : $mwVersion );
-		$requestParams[ 'sbcommit' ] = isset( $configData['commit'] ) ? $configData['commit'] : 'LATEST';
-		$requestParams[ 'sbbundled' ] = isset( $configData['bundled'] ) ? $configData['bundled'] : false;
-		$requestParams[ 'sbdbupdate' ] = isset( $configData['additional steps'] ) && in_array( 'database update', $configData['additional steps'] ) ?? false;
-		$requestParams[ 'sbcomposer' ] = isset( $configData['additional steps'] ) && in_array( 'composer update', $configData['additional steps'] ) ?? false;
+		$requestParams[ 'sbrepo' ] = $configData['repository'] ?? false;
+		$requestParams[ 'sbbranch' ] = $configData['branch'] ?? ( isset( $configData['repository'] ) ? 'master' : $mwVersion );
+		$requestParams[ 'sbcommit' ] = $configData['commit'] ?? 'LATEST';
+		$requestParams[ 'sbbundled' ] = $configData['bundled'] ?? false;
+		$requestParams[ 'sbdbupdate' ] = isset( $configData['additional steps'] ) && in_array( 'database update', $configData['additional steps'] );
+		$requestParams[ 'sbcomposer' ] = isset( $configData['additional steps'] ) && in_array( 'composer update', $configData['additional steps'] );
 
 		$extensionRoot = dirname( __DIR__, 1 );
 
@@ -171,7 +171,6 @@ class SpringboardAPI extends ApiBase {
 				break;
 			default:
 				$this->dieWithError( $this->msg( 'springboard-api-error-invalidtype' ) );
-				break;
 		}
 	}
 
