@@ -22,7 +22,7 @@ class SpecialSpringboard extends SpecialPage {
 	private $loaderFile = __DIR__ . '/CustomLoader.php';
 
 	public function __construct() {
-		parent::__construct( 'Springboard', 'springboard' );
+		parent::__construct( 'Springboard' );
 	}
 
 	public function execute( $query ) {
