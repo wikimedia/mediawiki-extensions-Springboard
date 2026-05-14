@@ -12,9 +12,9 @@
 
  namespace MediaWiki\Extension\Springboard;
 
- use ApiBase;
  use Exception;
- use ExtensionRegistry;
+ use MediaWiki\Api\ApiBase;
+ use MediaWiki\Registration\ExtensionRegistry;
  use Wikimedia\ParamValidator\ParamValidator;
 
  /**
